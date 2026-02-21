@@ -16,155 +16,244 @@
       </div>
     </header>
     <main>
-    <!-- BASIC CONFIG -->
-    <div class="sec-head mt1">
-      <div class="sec-title">Config</div>
-      <div class="row">
-        <button class="btn btn-ghost btn-xs" onclick="autoNames()">↺ Names</button>
-      </div>
-    </div>
-
-    <div class="config-panel">
-      <div class="cfg-grid">
-        <div class="cfg-group">
-          <div class="cfg-label">Country Name</div>
-          <input class="team-name-input" id="team-name" type="text" placeholder="Testlandia…" maxlength="30" oninput="updateExport()">
-        </div>
-        <div class="cfg-group">
-          <div class="cfg-label">Formation</div>
-          <select id="cfg-formation" onchange="applyFormation()">
-            <option value="4-4-2">4-4-2</option>
-            <option value="4-3-3">4-3-3</option>
-            <option value="4-2-3-1">4-2-3-1</option>
-            <option value="3-5-2">3-5-2</option>
-            <option value="4-5-1">4-5-1</option>
-            <option value="3-4-3">3-4-3</option>
-            <option value="5-3-2">5-3-2</option>
-            <option value="4-1-4-1">4-1-4-1</option>
-            <option value="custom">Custom</option>
-          </select>
-        </div>
-        <div class="cfg-group">
-          <div class="cfg-label">Name Language</div>
-          <select id="cfg-lang">
-            <option value="random">Random mix</option>
-            <option value="latin">Latin / Spanish</option>
-            <option value="english">English</option>
-            <option value="slavic">Slavic</option>
-            <option value="arabic">Arabic</option>
-            <option value="asian">East Asian</option>
-            <option value="african">African</option>
-            <option value="nordic">Nordic</option>
-            <option value="fantasy">Fantasy / Sci-fi</option>
-          </select>
-        </div>
-        <div class="cfg-group">
-          <div class="cfg-label">Recommendation</div>
-          <div class="info-note" style="font-size:.66rem">
-            Use this <a class="info-link" href="https://www.behindthename.com/random/" target="_blank">name generator</a><br>
-            Or manually set the names.
-          </div>
-        </div>
-
-        <!-- ADVANCED CONFIG TOGGLE -->
-        <div class="cfg-group" style="grid-column:1/-1">
-          <button class="collapse-btn" id="adv-toggle" onclick="toggleAdvanced()">
-            <span class="arr">▾</span> Advanced Config
-          </button>
-        </div>
+      <!-- PRESETS -->
+      <div class="preset-banner mt1">
+        <span class="preset-label">Load Preset</span>
+        <select class="preset-select" id="preset-select" onchange="loadPreset(this.value)">
+          <option value="">select a country</option>
+        </select>
+        <span class="preset-info" id="preset-info"></span>
       </div>
 
-      <!-- ADVANCED -->
-      <div class="collapsible collapsed" id="adv-section" style="margin-top:.75rem">
-
-        <!-- Race ratio -->
-        <div class="cfg-label" style="margin-bottom:.35rem">Race Ratio - <span>Free = Fully random attributes - Custom = for custom races (Direct Message Bilsa to specify it</span>)</div>
-        <div class="race-panel">
-          <div id="race-rows"></div>
-          <div class="row" style="margin-top:.55rem;gap:.4rem">
-            <button class="btn btn-ghost btn-xs" onclick="equalizeRaces()">Equalize</button>
-            <button class="btn btn-ghost btn-xs" onclick="clearRaces()">Clear all</button>
-            <button class="btn btn-ghost btn-xs" onclick="applyRaceDistribution()">Apply to squad</button>
-            <span class="dim" style="font-size:.68rem;margin-left:.25rem">Auto-fill will use these weights</span>
-          </div>
-        </div>
-
-        <!-- Set pieces -->
-        <div class="cfg-label" style="margin-top:.85rem;margin-bottom:.35rem">Set Pieces &amp; Special Roles</div>
-        <div class="sp-grid">
-          <div class="sp-item">
-            <div class="sp-label">Short Free Kick</div>
-            <select class="sp-sel" id="sp-fk-short" onchange="updateSpecial()"><option value="">— not set —</option></select>
-          </div>
-          <div class="sp-item">
-            <div class="sp-label">Long Free Kick</div>
-            <select class="sp-sel" id="sp-fk-long" onchange="updateSpecial()"><option value="">— not set —</option></select>
-          </div>
-          <div class="sp-item">
-            <div class="sp-label">Corner Kicks</div>
-            <select class="sp-sel" id="sp-corner" onchange="updateSpecial()"><option value="">— not set —</option></select>
-          </div>
-          <div class="sp-item">
-            <div class="sp-label">Penalty Kicks</div>
-            <select class="sp-sel" id="sp-penalty" onchange="updateSpecial()"><option value="">— not set —</option></select>
-          </div>
-        </div>
-
-      </div><!-- /adv-section -->
-    </div><!-- /config-panel -->
-
-    <!-- Formation bar + height averages -->
-    <div class="formation-bar" id="formation-bar"></div>
-    <div class="avg-bar">
-      <div class="avg-item"><span class="avg-label">Starters avg</span><span class="avg-val" id="avg-start">–</span></div>
-      <div class="avg-item"><span class="avg-label">Subs avg</span><span class="avg-val" id="avg-sub">–</span></div>
-      <div class="avg-item"><span class="avg-label">Team avg</span><span class="avg-val" id="avg-all">–</span></div>
-    </div>
-
-    <!-- SQUAD -->
-    <div class="sec-head">
-      <div class="sec-title">Squad · 26 Players</div>
-      <span class="dim" style="font-size:.68rem">Key = key player &nbsp;·&nbsp;C = Captain &nbsp;·&nbsp; ··· advanced</span>
-    </div>
-
-    <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th class="c-shirt">#</th>
-          <th class="c-name">Name</th>
-          <th class="c-pos">Pos</th>
-          <th class="c-race">Race</th>
-          <th class="c-height">Height (cm)</th>
-          <th class="c-ps">Playstyle</th>
-          <th class="c-foot">Foot</th>
-          <th class="c-key">Key</th>
-          <th class="c-cap">Captain</th>
-          <th class="c-adv"></th>
-        </tr>
-      </thead>
-      <tbody id="squad-body"></tbody>
-    </table>
-    </div>
-
-    <!-- EXPORT -->
-    <div class="export-box mt1">
-      <div class="sec-head" style="margin-bottom:.55rem">
-        <div class="sec-title">Export — Python List</div>
+      <!-- BASIC CONFIG -->
+      <div class="sec-head">
+        <div class="sec-title">Config</div>
         <div class="row">
-          <button class="btn btn-primary" onclick="copyExport()">📋 Copy to Clipboard</button>
-          <span class="copy-ok" id="copy-ok">✓ Copied!</span>
+          <button class="btn btn-ghost btn-xs" onclick="autoNames()">↺ Names</button>
         </div>
       </div>
-      <p class="dim" style="font-size:.7rem">Empty fields are omitted — the generator randomizes them.</p>
-      <div class="export-code" id="export-code"><span style="color:var(--text3)"># Fill the squad above…</span></div>
-    </div>
+
+      <div class="config-panel">
+        <div class="cfg-grid">
+          <div class="cfg-group">
+            <div class="cfg-label">Country Name</div>
+            <input class="team-name-input" id="team-name" type="text" placeholder="Testlandia…" maxlength="30" oninput="updateExport()">
+          </div>
+          <div class="cfg-group">
+            <div class="cfg-label">Formation</div>
+            <select id="cfg-formation" onchange="applyFormation()">
+              <option value="4-4-2">4-4-2</option>
+              <option value="4-3-3">4-3-3</option>
+              <option value="4-2-3-1">4-2-3-1</option>
+              <option value="3-5-2">3-5-2</option>
+              <option value="4-5-1">4-5-1</option>
+              <option value="3-4-3">3-4-3</option>
+              <option value="5-3-2">5-3-2</option>
+              <option value="4-1-4-1">4-1-4-1</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="cfg-group">
+            <div class="cfg-label">Name Language</div>
+            <select id="cfg-lang">
+              <option value="random">Random mix</option>
+              <option value="latin">Latin / Spanish</option>
+              <option value="english">English</option>
+              <option value="slavic">Slavic</option>
+              <option value="arabic">Arabic</option>
+              <option value="asian">East Asian</option>
+              <option value="african">African</option>
+              <option value="nordic">Nordic</option>
+              <option value="fantasy">Fantasy / Sci-fi</option>
+            </select>
+          </div>
+          <div class="cfg-group">
+            <div class="cfg-label">Recommendation</div>
+            <div class="info-note" style="font-size:.66rem">
+              Use this <a class="info-link" href="https://www.behindthename.com/random/" target="_blank">name generator</a><br>
+              Or manually set the names.
+            </div>
+          </div>
+
+          <!-- ADVANCED CONFIG TOGGLE -->
+          <div class="cfg-group" style="grid-column:1/-1">
+            <button class="collapse-btn" id="adv-toggle" onclick="toggleAdvanced()">
+              <span class="arr">▾</span> Advanced Config
+            </button>
+          </div>
+        </div>
+
+        <!-- ADVANCED -->
+        <div class="collapsible collapsed" id="adv-section" style="margin-top:.75rem">
+
+          <!-- Race ratio -->
+          <div class="cfg-label" style="margin-bottom:.35rem">Race Ratio - <span>Free = Fully random attributes - Custom = for custom races (Direct Message Bilsa to specify it</span>)</div>
+          <div class="race-panel">
+            <div id="race-rows"></div>
+            <div class="row" style="margin-top:.55rem;gap:.4rem">
+              <button class="btn btn-ghost btn-xs" onclick="equalizeRaces()">Equalize</button>
+              <button class="btn btn-ghost btn-xs" onclick="clearRaces()">Clear all</button>
+              <button class="btn btn-ghost btn-xs" onclick="applyRaceDistribution()">Apply to squad</button>
+              <span class="dim" style="font-size:.68rem;margin-left:.25rem">Auto-fill will use these weights</span>
+            </div>
+          </div>
+
+          <!-- Set pieces -->
+          <div class="cfg-label" style="margin-top:.85rem;margin-bottom:.35rem">Set Pieces &amp; Special Roles</div>
+          <div class="sp-grid">
+            <div class="sp-item">
+              <div class="sp-label">Short Free Kick</div>
+              <select class="sp-sel" id="sp-fk-short" onchange="updateSpecial()"><option value="">— not set —</option></select>
+            </div>
+            <div class="sp-item">
+              <div class="sp-label">Long Free Kick</div>
+              <select class="sp-sel" id="sp-fk-long" onchange="updateSpecial()"><option value="">— not set —</option></select>
+            </div>
+            <div class="sp-item">
+              <div class="sp-label">Corner Kicks</div>
+              <select class="sp-sel" id="sp-corner" onchange="updateSpecial()"><option value="">— not set —</option></select>
+            </div>
+            <div class="sp-item">
+              <div class="sp-label">Penalty Kicks</div>
+              <select class="sp-sel" id="sp-penalty" onchange="updateSpecial()"><option value="">— not set —</option></select>
+            </div>
+          </div>
+
+        </div><!-- /adv-section -->
+      </div><!-- /config-panel -->
+
+      <!-- Formation bar + height averages -->
+      <div class="formation-bar" id="formation-bar"></div>
+      <div class="avg-bar">
+        <div class="avg-item"><span class="avg-label">Starters avg</span><span class="avg-val" id="avg-start">–</span></div>
+        <div class="avg-item"><span class="avg-label">Subs avg</span><span class="avg-val" id="avg-sub">–</span></div>
+        <div class="avg-item"><span class="avg-label">Team avg</span><span class="avg-val" id="avg-all">–</span></div>
+      </div>
+
+      <!-- SQUAD -->
+      <div class="sec-head">
+        <div class="sec-title">Squad · 26 Players</div>
+        <span class="dim" style="font-size:.68rem">Key = key player &nbsp;·&nbsp;C = Captain &nbsp;·&nbsp; ··· advanced</span>
+      </div>
+
+      <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="c-shirt">#</th>
+            <th class="c-name">Name</th>
+            <th class="c-pos">Pos</th>
+            <th class="c-race">Race</th>
+            <th class="c-height">Height (cm)</th>
+            <th class="c-ps">Playstyle</th>
+            <th class="c-foot">Foot</th>
+            <th class="c-key">Key</th>
+            <th class="c-cap">Captain</th>
+            <th class="c-adv"></th>
+          </tr>
+        </thead>
+        <tbody id="squad-body"></tbody>
+      </table>
+      </div>
+
+      <!-- EXPORT -->
+      <div class="export-box mt1">
+        <div class="sec-head" style="margin-bottom:.55rem">
+          <div class="sec-title">Export — Python List</div>
+          <div class="row">
+            <button class="btn btn-primary" onclick="copyExport()">📋 Copy to Clipboard</button>
+            <span class="copy-ok" id="copy-ok">✓ Copied!</span>
+          </div>
+        </div>
+        <p class="dim" style="font-size:.7rem">Empty fields are omitted — the generator randomizes them.</p>
+        <div class="export-code" id="export-code"><span style="color:var(--text3)"># Fill the squad above…</span></div>
+      </div>
 
     </main>
     <div id="toast"></div>
     <!-- <script src="script.js"></script> -->
     <script>
+      // function initPresetSelect(){
+      //   const wrap = document.getElementById("ps-wrap");
+      //   const keys = Object.keys(PRESET_TEAMS);
+
+      //   const btn = document.createElement("div");
+      //   btn.id = "ps-btn";
+      //   btn.className = "ps-btn";
+      //   btn.innerHTML = '<span id="ps-label" style="color:var(--text3);display:flex;align-items:center;gap:.45rem">— select a country —</span><span class="ps-arr">&#9662;</span>';
+      //   btn.onclick = (e) => { e.stopPropagation(); document.getElementById("ps-dd").classList.toggle("ps-open"); };
+
+      //   const dd = document.createElement("div");
+      //   dd.id = "ps-dd";
+      //   dd.className = "ps-dd";
+
+      //   const emptyItem = document.createElement("div");
+      //   emptyItem.className = "ps-item";
+      //   emptyItem.textContent = "— none —";
+      //   emptyItem.onclick = () => { dd.classList.remove("ps-open"); loadPreset(""); document.getElementById("ps-label").innerHTML = '<span style="color:var(--text3)">— select a country —</span>'; };
+      //   dd.appendChild(emptyItem);
+
+      //   keys.forEach(name => {
+      //     const item = document.createElement("div");
+      //     item.className = "ps-item";
+      //     item.innerHTML = '<img src="flags/' + name + '.png" class="ps-flag" onerror="this.style.display='none'" alt=""> <span>' + name + '</span>';
+      //     item.onclick = () => {
+      //       dd.classList.remove("ps-open");
+      //       loadPreset(name);
+      //       document.getElementById("ps-label").innerHTML = '<img src="flags/' + name + '.png" class="ps-flag" onerror="this.style.display='none'" alt=""> <span>' + name + '</span>';
+      //     };
+      //     dd.appendChild(item);
+      //   });
+
+      //   wrap.appendChild(btn);
+      //   wrap.appendChild(dd);
+      //   document.addEventListener("click", () => dd.classList.remove("ps-open"));
+      // }
+    function initPresetSelect() {
+      const select = document.getElementById("preset-select");
+      if (!select) return;
+
+      select.innerHTML = '<option value=""> - select a country - </option>';
+
+      const keys = Object.keys(PRESET_TEAMS).sort();
+
+      keys.forEach(key => {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = key;
+          select.appendChild(opt);
+      });
+
+    }
     
+    function loadPreset(key){
+      if(!key){document.getElementById("preset-info").textContent="";return;}
+      const preset=PRESET_TEAMS[key];
+      if(!preset) return;
+      if(preset.country) document.getElementById("team-name").value=preset.country;
+      players=mkPlayers();
+      captainIdx=-1;
+      specialRoles={fkShort:-1,fkLong:-1,corner:-1,penalty:-1};
+      preset.players.forEach((src,i)=>{
+        if(i>=players.length) return;
+        const p=players[i];
+        if(src.shirt    !==undefined) p.shirt    =src.shirt;
+        if(src.name     !==undefined) p.name     =src.name;
+        if(src.position !==undefined) p.position =src.position;
+        if(src.race     !==undefined) p.race     =String(src.race);
+        if(src.height   !==undefined) p.height   =src.height;
+        if(src.weight   !==undefined) p.weight   =src.weight;
+        if(src.age      !==undefined) p.age      =src.age;
+        if(src.hair     !==undefined) p.hair     =String(src.hair);
+        if(src.eyes     !==undefined) p.eyes     =String(src.eyes);
+        if(src.foot     !==undefined) p.foot     =src.foot;
+        if(src.playstyle!==undefined) p.playstyle=String(src.playstyle);
+      });
+      players[0].position="GK"; players[11].position="GK"; players[12].position="GK";
+      renderTable(); renderFormationBar(); refreshSpecialSelects(); updateAvgHeights(); updateExport();
+      document.getElementById("preset-info").textContent=preset.players.filter(p=>p.name).length+" players loaded";
+      toast("✓ Loaded "+key);
+    }
     //  DATA
     const POSITIONS = ["GK","CB","LB","RB","DMF","CMF","LMF","RMF","AMF","LWF","RWF","SS","CF"];
     const POS_GROUP = {GK:"gk",CB:"def",LB:"def",RB:"def",DMF:"mid",CMF:"mid",LMF:"mid",RMF:"mid",AMF:"mid",LWF:"att",RWF:"att",SS:"att",CF:"att"};
@@ -263,6 +352,173 @@
     ];
     const MISC_FIELDS = ["WeakFootUsage","WeakFootAcc","Form","InjuryResistance"];
     const SKILLS = ["Trickster","MazingRun","SpeedingBullet","IncisiveRun","LongBallExpert","EarlyCross","LongRanger","ScissorsFeint","DoubleTouch","FlipFlap","MarseilleTurn","Sombrero","HeadingSpecial","LongRangeDrive","LongRangeShot","KnuckleShot","DippingShots","RisingShots","AcrobaticFinishing","FirstTimeShot","OneTouchPass","ThroughPassing","WeightedPass","PinpointCrossing","OutsideCurler","Rabona","NoLookPass","PenaltySpecialist","Gamesmanship","ManMarking","TrackBack","Interception","Captaincy","SuperSub","FightingSpirit"];
+    const PRESET_TEAMS = {
+      "Zerphen": {
+        country: "Zerphen",
+        // formation: "4-3-3",
+        players: [
+          {shirt:1,  name:"Kyrax",    position:"GK",  height:202, race:1, foot:"Right"},
+          {shirt:4,  name:"Thovar",   position:"CB",  height:190, race:3},
+          {shirt:5,  name:"Drennis",  position:"CB",  height:188, race:1},
+          {shirt:3,  name:"Aelric",   position:"LB",  height:178, race:2},
+          {shirt:2,  name:"Vornak",   position:"RB",  height:180, race:3},
+          {shirt:6,  name:"Sylmar",   position:"CMF", height:181},
+          {shirt:8,  name:"Calder",   position:"CMF", height:177},
+          {shirt:10, name:"Zindelia", position:"AMF", height:172, race:4, foot:"Left"},
+          {shirt:11, name:"Ryke",     position:"LWF", height:174, race:2},
+          {shirt:7,  name:"Orryn",    position:"RWF", height:173, race:1},
+          {shirt:9,  name:"Aethon",   position:"CF",  height:185, race:3},
+          {shirt:12, name:"Vex",      position:"GK",  height:196},
+          {shirt:25, name:"Quell",    position:"GK",  height:191},
+          {shirt:13, name:"Sorin",    position:"CB",  height:183},
+          {shirt:14, name:"Traxis",   position:"CB",  height:186},
+          {shirt:15, name:"Stryx",    position:"LB",  height:175},
+          {shirt:16, name:"Dravon",   position:"RB",  height:179},
+          {shirt:17, name:"Krios",    position:"DMF", height:180},
+          {shirt:18, name:"Tharion",  position:"CMF", height:176},
+          {shirt:20, name:"Malvyn",   position:"CMF", height:174},
+          {shirt:21, name:"Nexus",    position:"LMF", height:171},
+          {shirt:19, name:"Pyrion",   position:"RMF", height:172},
+          {shirt:22, name:"Zelos",    position:"AMF", height:170},
+          {shirt:23, name:"Caelum",   position:"SS",  height:178},
+          {shirt:24, name:"Sylvar",   position:"CF",  height:182},
+          {shirt:26, name:"Vance",    position:"CF",  height:184},
+        ]
+      },
+
+      "Nordheim": {
+        country: "Nordheim",
+        // formation: "4-4-2",
+        players: [
+          {shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
+          {shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
+          {shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
+          {shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
+          {shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
+          {shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
+          {shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
+          {shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
+          {shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
+          {shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
+          {shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
+          {shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
+          {shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
+          {shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
+          {shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
+          {shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
+          {shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
+          {shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
+          {shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
+          {shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
+          {shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
+          {shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
+          {shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
+          {shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
+          {shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
+          {shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+        ]
+      },
+
+      "Al-Qasira": {
+        country: "Al-Qasira",
+        // formation: "4-2-3-1",
+        players: [
+          {shirt:1,  name:"Hassan Al-Rashid", position:"GK",  height:191, race:5, hair:"4", eyes:"2"},
+          {shirt:4,  name:"Nasser Ibrahim",   position:"CB",  height:187, race:5, hair:"4"},
+          {shirt:5,  name:"Omar Mansour",     position:"CB",  height:185, race:5, hair:"4"},
+          {shirt:3,  name:"Bilal El-Amin",    position:"LB",  height:178, race:5, foot:"Left"},
+          {shirt:2,  name:"Tariq Khalil",     position:"RB",  height:179, race:5},
+          {shirt:6,  name:"Adnan Hamdan",     position:"DMF", height:181, race:5, hair:"4"},
+          {shirt:8,  name:"Samir Qasim",      position:"DMF", height:179, race:5},
+          {shirt:11, name:"Ziad Bashir",      position:"LMF", height:174, race:5, foot:"Left"},
+          {shirt:7,  name:"Riad Nabil",       position:"RMF", height:175, race:5},
+          {shirt:10, name:"Karim Farouk",     position:"AMF", height:176, race:5, hair:"4", eyes:"2"},
+          {shirt:9,  name:"Youssef Jamal",    position:"CF",  height:183, race:5, hair:"4"},
+          {shirt:12, name:"Faisal Al-Said",   position:"GK",  height:189, race:5},
+          {shirt:25, name:"Hadi Zubair",      position:"GK",  height:186, race:5},
+          {shirt:13, name:"Ahmed Diallo",     position:"CB",  height:184, race:9},
+          {shirt:14, name:"Jamal Traore",     position:"CB",  height:182, race:9},
+          {shirt:15, name:"Nabil Camara",     position:"LB",  height:176, race:5},
+          {shirt:16, name:"Adel Mansour",     position:"RB",  height:177, race:5},
+          {shirt:17, name:"Rafiq Ibrahim",    position:"DMF", height:180, race:5},
+          {shirt:18, name:"Taher El-Amin",    position:"CMF", height:176, race:5},
+          {shirt:20, name:"Mourad Khalil",    position:"CMF", height:174, race:9},
+          {shirt:21, name:"Yazid Qasim",      position:"LMF", height:172, race:5},
+          {shirt:19, name:"Nassim Bashir",    position:"RMF", height:173, race:5},
+          {shirt:22, name:"Amin Farouk",      position:"AMF", height:171, race:5},
+          {shirt:23, name:"Walid Nabil",      position:"SS",  height:176, race:9},
+          {shirt:24, name:"Habib Jamal",      position:"CF",  height:180, race:5},
+          {shirt:26, name:"Sami Zubair",      position:"CF",  height:182, race:5},
+        ]
+      },
+
+      "Veltoria": {
+        country: "Veltoria",
+        // formation: "3-5-2",
+        players: [
+          {shirt:1,  name:"Dominic Valcourt",   position:"GK",  height:193, race:2},
+          {shirt:4,  name:"Marco Ferretti",     position:"CB",  height:188, race:2, hair:"4"},
+          {shirt:5,  name:"Luca Santoro",       position:"CB",  height:186, race:2, hair:"5"},
+          {shirt:6,  name:"Alessandro Ricci",   position:"CB",  height:185, race:2},
+          {shirt:11, name:"Matteo Esposito",    position:"LMF", height:175, race:2, foot:"Left"},
+          {shirt:7,  name:"Lorenzo Moretti",    position:"RMF", height:176, race:2},
+          {shirt:8,  name:"Fabrizio Conti",     position:"CMF", height:179, race:2},
+          {shirt:10, name:"Gianluca Russo",     position:"CMF", height:177, race:2},
+          {shirt:3,  name:"Davide Mancini",     position:"DMF", height:181, race:2, hair:"4"},
+          {shirt:9,  name:"Filippo Caruso",     position:"CF",  height:184, race:2},
+          {shirt:19, name:"Simone Cattaneo",    position:"CF",  height:182, race:2},
+          {shirt:12, name:"Emanuele De Luca",   position:"GK",  height:191, race:2},
+          {shirt:25, name:"Roberto Amato",      position:"GK",  height:188, race:2},
+          {shirt:13, name:"Nicola Barbieri",    position:"CB",  height:184, race:2},
+          {shirt:14, name:"Stefano Pellegrini", position:"CB",  height:183, race:2},
+          {shirt:15, name:"Andrea Sorrentino",  position:"LB",  height:177, race:2, foot:"Left"},
+          {shirt:16, name:"Cristian Vitale",    position:"RB",  height:178, race:2},
+          {shirt:17, name:"Massimo Gallo",      position:"DMF", height:180, race:2},
+          {shirt:18, name:"Giorgio Marini",     position:"CMF", height:176, race:2},
+          {shirt:20, name:"Daniele Greco",      position:"CMF", height:175, race:2},
+          {shirt:21, name:"Claudio Romano",     position:"LMF", height:173, race:2, foot:"Left"},
+          {shirt:22, name:"Franco Coppola",     position:"RMF", height:174, race:2},
+          {shirt:23, name:"Enrico Ferrari",     position:"AMF", height:172, race:2},
+          {shirt:24, name:"Piero De Angelis",   position:"SS",  height:177, race:2},
+          {shirt:26, name:"Giacomo Ruggiero",   position:"CF",  height:181, race:2},
+          {shirt:2,  name:"Renato Bianco",      position:"RB",  height:179, race:2},
+        ]
+      },
+
+      "Karavek": {
+        country: "Karavek",
+        // formation: "4-4-2",
+        players: [
+          {shirt:1,  name:"Dmitri Volkov",   position:"GK",  height:194, race:3, hair:"4"},
+          {shirt:4,  name:"Nikolai Petrov",  position:"CB",  height:190, race:3},
+          {shirt:5,  name:"Ivan Smirnov",    position:"CB",  height:187, race:3, hair:"4"},
+          {shirt:3,  name:"Alexei Sokolov",  position:"LB",  height:179, race:3, foot:"Left"},
+          {shirt:2,  name:"Pavel Kozlov",    position:"RB",  height:181, race:3},
+          {shirt:6,  name:"Boris Novak",     position:"DMF", height:183, race:3, hair:"4"},
+          {shirt:8,  name:"Sergei Dvorak",   position:"CMF", height:180, race:3},
+          {shirt:11, name:"Viktor Kolar",    position:"LMF", height:175, race:3, foot:"Left"},
+          {shirt:7,  name:"Andrei Blaha",    position:"RMF", height:176, race:3},
+          {shirt:10, name:"Mikhail Novotny", position:"SS",  height:178, race:3},
+          {shirt:9,  name:"Vasili Horak",    position:"CF",  height:186, race:3, hair:"4"},
+          {shirt:12, name:"Oleg Chytil",     position:"GK",  height:192, race:3},
+          {shirt:25, name:"Stanislav Bartos",position:"GK",  height:189, race:3},
+          {shirt:13, name:"Yuri Vavra",      position:"CB",  height:186, race:3},
+          {shirt:14, name:"Roman Kucera",    position:"CB",  height:184, race:3},
+          {shirt:15, name:"Piotr Pokorny",   position:"LB",  height:177, race:3, foot:"Left"},
+          {shirt:16, name:"Vadim Zeman",     position:"RB",  height:179, race:3},
+          {shirt:17, name:"Gennadi Kolar",   position:"DMF", height:181, race:3},
+          {shirt:18, name:"Feodor Blaha",    position:"CMF", height:177, race:3},
+          {shirt:20, name:"Lev Novotny",     position:"CMF", height:175, race:3},
+          {shirt:21, name:"Timur Horak",     position:"LMF", height:173, race:3},
+          {shirt:19, name:"Artem Chytil",    position:"RMF", height:174, race:3},
+          {shirt:22, name:"Kirill Bartos",   position:"AMF", height:172, race:3},
+          {shirt:23, name:"Denis Vavra",     position:"SS",  height:176, race:3},
+          {shirt:24, name:"Evgeny Kucera",   position:"CF",  height:181, race:3},
+          {shirt:26, name:"Fyodor Volkov",   position:"CF",  height:183, race:3},
+        ]
+      },
+
+    };
 
     //  STATE
     let players = mkPlayers();
@@ -302,6 +558,7 @@
     //  INIT
     function init(){
       buildRaceRows();
+      initPresetSelect();
       applyFormation();
     }
 
@@ -758,6 +1015,8 @@
       specialRoles = {fkShort:-1,fkLong:-1,corner:-1,penalty:-1};
       RACES.forEach(r=>raceWeights[r.v]=0);
       buildRaceRows();
+      document.getElementById("preset-select").value="";
+      document.getElementById("preset-info").textContent="";
       applyFormation();
       toast("✓ Reset");
     }
