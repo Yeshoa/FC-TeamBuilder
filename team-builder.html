@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Cup — Team Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header>
+      <div class="logo">FOreST Cup 2026</div>
+      <div class="header-right">
+        <button class="btn btn-secondary btn-sm" onclick="autoFillAll()">Auto-fill</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearAll()">Reset</button>
+      </div>
+    </header>
+    <main>
+    <!-- BASIC CONFIG -->
+    <div class="sec-head mt1">
+      <div class="sec-title">Config</div>
+      <div class="row">
+        <button class="btn btn-ghost btn-xs" onclick="autoNames()">↺ Names</button>
+      </div>
+    </div>
+
+    <div class="config-panel">
+      <div class="cfg-grid">
+        <div class="cfg-group">
+          <div class="cfg-label">Country Name</div>
+          <input class="team-name-input" id="team-name" type="text" placeholder="Testlandia…" maxlength="30" oninput="updateExport()">
+        </div>
+        <div class="cfg-group">
+          <div class="cfg-label">Formation</div>
+          <select id="cfg-formation" onchange="applyFormation()">
+            <option value="4-4-2">4-4-2</option>
+            <option value="4-3-3">4-3-3</option>
+            <option value="4-2-3-1">4-2-3-1</option>
+            <option value="3-5-2">3-5-2</option>
+            <option value="4-5-1">4-5-1</option>
+            <option value="3-4-3">3-4-3</option>
+            <option value="5-3-2">5-3-2</option>
+            <option value="4-1-4-1">4-1-4-1</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <div class="cfg-group">
+          <div class="cfg-label">Name Language</div>
+          <select id="cfg-lang">
+            <option value="random">Random mix</option>
+            <option value="latin">Latin / Spanish</option>
+            <option value="english">English</option>
+            <option value="slavic">Slavic</option>
+            <option value="arabic">Arabic</option>
+            <option value="asian">East Asian</option>
+            <option value="african">African</option>
+            <option value="nordic">Nordic</option>
+            <option value="fantasy">Fantasy / Sci-fi</option>
+          </select>
+        </div>
+        <div class="cfg-group">
+          <div class="cfg-label">Recommendation</div>
+          <div class="info-note" style="font-size:.66rem">
+            Use this <a class="info-link" href="https://www.behindthename.com/random/" target="_blank">name generator</a><br>
+            Or manually set the names.
+          </div>
+        </div>
+
+        <!-- ADVANCED CONFIG TOGGLE -->
+        <div class="cfg-group" style="grid-column:1/-1">
+          <button class="collapse-btn" id="adv-toggle" onclick="toggleAdvanced()">
+            <span class="arr">▾</span> Advanced Config
+          </button>
+        </div>
+      </div>
+
+      <!-- ADVANCED -->
+      <div class="collapsible collapsed" id="adv-section" style="margin-top:.75rem">
+
+        <!-- Race ratio -->
+        <div class="cfg-label" style="margin-bottom:.35rem">Race Ratio - <span>Free = Fully random attributes - Custom = for custom races (Direct Message Bilsa to specify it</span>)</div>
+        <div class="race-panel">
+          <div id="race-rows"></div>
+          <div class="row" style="margin-top:.55rem;gap:.4rem">
+            <button class="btn btn-ghost btn-xs" onclick="equalizeRaces()">Equalize</button>
+            <button class="btn btn-ghost btn-xs" onclick="clearRaces()">Clear all</button>
+            <button class="btn btn-ghost btn-xs" onclick="applyRaceDistribution()">Apply to squad</button>
+            <span class="dim" style="font-size:.68rem;margin-left:.25rem">Auto-fill will use these weights</span>
+          </div>
+        </div>
+
+        <!-- Set pieces -->
+        <div class="cfg-label" style="margin-top:.85rem;margin-bottom:.35rem">Set Pieces &amp; Special Roles</div>
+        <div class="sp-grid">
+          <div class="sp-item">
+            <div class="sp-label">Short Free Kick</div>
+            <select class="sp-sel" id="sp-fk-short" onchange="updateSpecial()"><option value="">— not set —</option></select>
+          </div>
+          <div class="sp-item">
+            <div class="sp-label">Long Free Kick</div>
+            <select class="sp-sel" id="sp-fk-long" onchange="updateSpecial()"><option value="">— not set —</option></select>
+          </div>
+          <div class="sp-item">
+            <div class="sp-label">Corner Kicks</div>
+            <select class="sp-sel" id="sp-corner" onchange="updateSpecial()"><option value="">— not set —</option></select>
+          </div>
+          <div class="sp-item">
+            <div class="sp-label">Penalty Kicks</div>
+            <select class="sp-sel" id="sp-penalty" onchange="updateSpecial()"><option value="">— not set —</option></select>
+          </div>
+        </div>
+
+      </div><!-- /adv-section -->
+    </div><!-- /config-panel -->
+
+    <!-- Formation bar + height averages -->
+    <div class="formation-bar" id="formation-bar"></div>
+    <div class="avg-bar">
+      <div class="avg-item"><span class="avg-label">Starters avg</span><span class="avg-val" id="avg-start">–</span></div>
+      <div class="avg-item"><span class="avg-label">Subs avg</span><span class="avg-val" id="avg-sub">–</span></div>
+      <div class="avg-item"><span class="avg-label">Team avg</span><span class="avg-val" id="avg-all">–</span></div>
+    </div>
+
+    <!-- SQUAD -->
+    <div class="sec-head">
+      <div class="sec-title">Squad · 26 Players</div>
+      <span class="dim" style="font-size:.68rem">Key = key player &nbsp;·&nbsp;C = Captain &nbsp;·&nbsp; ··· advanced</span>
+    </div>
+
+    <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="c-shirt">#</th>
+          <th class="c-name">Name</th>
+          <th class="c-pos">Pos</th>
+          <th class="c-race">Race</th>
+          <th class="c-height">Height (cm)</th>
+          <th class="c-ps">Playstyle</th>
+          <th class="c-foot">Foot</th>
+          <th class="c-key">Key</th>
+          <th class="c-cap">Captain</th>
+          <th class="c-adv"></th>
+        </tr>
+      </thead>
+      <tbody id="squad-body"></tbody>
+    </table>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="export-box mt1">
+      <div class="sec-head" style="margin-bottom:.55rem">
+        <div class="sec-title">Export — Python List</div>
+        <div class="row">
+          <button class="btn btn-primary" onclick="copyExport()">📋 Copy to Clipboard</button>
+          <span class="copy-ok" id="copy-ok">✓ Copied!</span>
+        </div>
+      </div>
+      <p class="dim" style="font-size:.7rem">Empty fields are omitted — the generator randomizes them.</p>
+      <div class="export-code" id="export-code"><span style="color:var(--text3)"># Fill the squad above…</span></div>
+    </div>
+
+    </main>
+    <div id="toast"></div>
+    <!-- <script src="script.js"></script> -->
+    <script>
+    
+    //  DATA
+    const POSITIONS = ["GK","CB","LB","RB","DMF","CMF","LMF","RMF","AMF","LWF","RWF","SS","CF"];
+    const POS_GROUP = {GK:"gk",CB:"def",LB:"def",RB:"def",DMF:"mid",CMF:"mid",LMF:"mid",RMF:"mid",AMF:"mid",LWF:"att",RWF:"att",SS:"att",CF:"att"};
+    const POS_CHIP = {gk:"pc-gk",def:"pc-def",mid:"pc-mid",att:"pc-att"};
+
+    const PLAYSTYLES = {
+      GK: [{v:16,l:"Offensive GK"},{v:17,l:"Defensive GK"}],
+      CB: [{v:9,l:"The Destroyer"},{v:10,l:"Extra Frontman"},{v:15,l:"Build Up"}],
+      LB: [{v:11,l:"Offensive FB"},{v:12,l:"Defensive FB"},{v:21,l:"FB Finisher"}],
+      RB: [{v:11,l:"Offensive FB"},{v:12,l:"Defensive FB"},{v:21,l:"FB Finisher"}],
+      DMF:[{v:8,l:"Anchor Man"},{v:9,l:"The Destroyer"},{v:20,l:"Orchestrator"}],
+      CMF:[{v:5,l:"Classic No.10"},{v:7,l:"Box-to-Box"},{v:20,l:"Orchestrator"}],
+      LMF:[{v:6,l:"Hole Player"},{v:7,l:"Box-to-Box"},{v:14,l:"Creative Playmaker"},{v:18,l:"Roaming Flank"},{v:19,l:"Cross Specialist"}],
+      RMF:[{v:6,l:"Hole Player"},{v:7,l:"Box-to-Box"},{v:14,l:"Creative Playmaker"},{v:18,l:"Roaming Flank"},{v:19,l:"Cross Specialist"}],
+      AMF:[{v:5,l:"Classic No.10"},{v:6,l:"Hole Player"},{v:14,l:"Creative Playmaker"}],
+      LWF:[{v:4,l:"Prolific Winger"},{v:14,l:"Creative Playmaker"},{v:18,l:"Roaming Flank"},{v:19,l:"Cross Specialist"}],
+      RWF:[{v:4,l:"Prolific Winger"},{v:14,l:"Creative Playmaker"},{v:18,l:"Roaming Flank"},{v:19,l:"Cross Specialist"}],
+      SS: [{v:1,l:"Goal Poacher"},{v:2,l:"Dummy Runner"},{v:5,l:"Classic No.10"},{v:6,l:"Hole Player"},{v:14,l:"Creative Playmaker"}],
+      CF: [{v:1,l:"Goal Poacher"},{v:3,l:"Fox in the Box"},{v:13,l:"Target Man"}]
+    };
+
+    const RACES = [
+      {v:1, l:"Nordic",         swatch:"#d4b89a"},
+      {v:2, l:"Mediterranean",  swatch:"#c49a6c"},
+      {v:3, l:"Slavic",         swatch:"#e8c9a0"},
+      {v:4, l:"Mestizo",        swatch:"#c08050"},
+      {v:5, l:"Arab",           swatch:"#b87840"},
+      {v:6, l:"South Asian",    swatch:"#9a6030"},
+      {v:7, l:"East Asian",     swatch:"#d4a870"},
+      {v:8, l:"Southeast Asian",swatch:"#b88858"},
+      {v:9, l:"Sub-Saharan",    swatch:"#5a3018"},
+      {v:10,l:"Oceanic",        swatch:"#7a4828"},
+      {v:11,l:"Free",         swatch:"#2478ff"},
+      {v:12,l:"Custom",         swatch:"#22ff00"}
+    ];
+
+    const HAIR_COLORS = [
+      {v:"1",l:"Light Brown",  hex:"#8B5E3C"},
+      {v:"2",l:"Dark Blonde",  hex:"#C8A45A"},
+      {v:"3",l:"Pure Blonde",  hex:"#F0D080"},
+      {v:"4",l:"Black",        hex:"#1a1208"},
+      {v:"5",l:"Brown",        hex:"#6B3A2A"},
+      {v:"6",l:"Dark Brown",   hex:"#3D1F10"},
+      {v:"7",l:"Grey",         hex:"#909090"},
+      {v:"8",l:"Red / Auburn", hex:"#8B2500"}
+    ];
+
+    const EYE_COLORS = [
+      {v:"1",l:"Black", hex:"#0b0401"},{v:"2",l:"Dark Brown", hex:"#2e0a01"},{v:"3",l:"Brown", hex: "#6b3712"},
+      {v:"4",l:"Light Brown", hex: "#9a3902"},{v:"5",l:"Dark Blue", hex: "#0a1727"},{v:"6",l:"Blue-Grey", hex: "#263e3b"},
+      {v:"7",l:"Grey", hex: "#717c7e"},{v:"8",l:"Light Blue", hex: "#377997"},{v:"9",l:"Hazel", hex: "#ad4b0e"},
+      {v:"10",l:"Green", hex: "#588b2d"},{v:"11",l:"Violet", hex: "#896ea4"}
+    ];
+
+    // const FORMATIONS = {
+    //   "4-3-3":   ["GK","CB","CB","LB","RB","CMF","CMF","CMF","LWF","RWF","CF","GK","GK","CB","CB","LB","RB","CMF","CMF","CMF","CMF","CMF","LWF","RWF","CF","CF"],
+    //   "4-4-2":   ["GK","CB","CB","LB","RB","CMF","CMF","LMF","RMF","CF","CF","CB","CB","LB","RB","CMF","CMF","LMF","AMF","SS","GK","GK","CB","LB","DMF","CF"],
+    //   "4-2-3-1": ["GK","CB","CB","LB","RB","DMF","DMF","LMF","RMF","AMF","CF","CB","CB","LB","RB","CMF","CMF","LWF","RWF","SS","GK","GK","CB","LB","DMF","CF"],
+    //   "3-5-2":   ["GK","CB","CB","CB","LMF","RMF","CMF","CMF","DMF","CF","CF","CB","CB","LB","RB","CMF","DMF","AMF","LWF","RWF","GK","GK","CB","LB","SS","CF"],
+    //   "4-5-1":   ["GK","CB","CB","LB","RB","DMF","CMF","CMF","LMF","RMF","CF","CB","CB","LB","RB","DMF","DMF","AMF","LWF","RWF","GK","GK","CB","LB","CMF","SS"],
+    //   "3-4-3":   ["GK","CB","CB","CB","LMF","RMF","CMF","CMF","LWF","RWF","CF","CB","CB","LB","RB","CMF","DMF","AMF","SS","SS","GK","GK","CB","LB","DMF","CF"],
+    //   "5-3-2":   ["GK","CB","CB","CB","LB","RB","CMF","CMF","DMF","CF","CF","CB","CB","LB","RB","CMF","CMF","AMF","LWF","RWF","GK","GK","CB","DMF","SS","CF"],
+    //   "4-1-4-1": ["GK","CB","CB","LB","RB","DMF","LMF","RMF","CMF","AMF","CF","CB","CB","LB","RB","DMF","DMF","LMF","RMF","SS","GK","GK","CB","LB","CMF","CF"],
+    //   "custom":  Array(26).fill("CMF")
+    // };
+    const FORMATIONS = {
+      "4-4-2": ["GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "LMF", "RMF", "SS", "CF", "GK", "GK", "CB", "CB", "LB", "RB", "DMF", "DMF", "CMF", "CMF", "LMF", "RMF", "SS", "CF", "CF"],
+      "4-3-3": ["GK", "CB", "CB", "LB", "RB", "CMF", "CMF", "CMF", "LWF", "RWF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "CMF", "LMF", "RMF", "LWF", "RWF", "SS", "CF"],
+      "4-2-3-1": ["GK", "CB", "CB", "LB", "RB", "DMF", "DMF", "LMF", "RMF", "AMF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "LMF", "RMF", "AMF", "LWF", "RWF", "SS", "CF"],
+      "3-5-2": ["GK", "CB", "CB", "CB", "LMF", "RMF", "CMF", "CMF", "DMF", "CF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "LMF", "RMF", "CMF", "DMF", "AMF", "LWF", "RWF", "SS", "CF"],
+      "4-5-1": ["GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "CMF", "LMF", "RMF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "LMF", "RMF", "AMF", "LWF", "RWF", "SS", "CF"],
+      "3-4-3": ["GK", "CB", "CB", "CB", "LMF", "RMF", "CMF", "CMF", "LWF", "RWF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "LMF", "RMF", "CMF", "DMF", "AMF", "LWF", "RWF", "SS", "CF"],
+      "5-3-2": ["GK", "CB", "CB", "CB", "LB", "RB", "CMF", "CMF", "DMF", "CF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "CMF", "DMF", "AMF", "LMF", "RMF", "LWF", "RWF", "SS", "CF"],
+      "4-1-4-1": ["GK", "CB", "CB", "LB", "RB", "DMF", "LMF", "RMF", "CMF", "AMF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "DMF", "LMF", "RMF", "CMF", "AMF", "LWF", "RWF", "SS", "CF"],
+      "custom": Array(11).fill("CMF").concat(["GK", "GK", ...Array(13).fill("CMF")]) 
+    };
+
+    const NAMES = {
+      latin:   ["Alexandro","Fabian","Lorenzo","Rodrigo","Matias","Sebastian","Valentino","Emiliano","Nicolas","Cruz","Vargas","Morales","Torres","Reyes","Herrera","Mendoza","Delgado","Rojas","Fuentes","Silva","Castro","Rios","Ortiz","Salinas","Vega","Pizarro"],
+      english: ["James","Oliver","Harry","Charlie","Jack","George","Noah","Leo","Oscar","Henry","Smith","Jones","Taylor","Brown","Davies","Evans","Wilson","Thomas","Roberts","Walker","White","Harris","Martin","Clark","Lewis","Hall"],
+      slavic:  ["Dmitri","Ivan","Alexei","Nikolai","Pavel","Andrei","Mikhail","Sergei","Viktor","Boris","Volkov","Petrov","Smirnov","Sokolov","Novak","Dvorak","Kolar","Blaha","Novotny","Horak","Chytil","Bartos","Vavra","Kucera","Pokorny","Zeman"],
+      arabic:  ["Karim","Omar","Youssef","Ahmed","Hassan","Tariq","Ziad","Faisal","Nasser","Bilal","Al-Rashid","Ibrahim","Mansour","El-Amin","Khalil","Hamdan","Qasim","Bashir","Nabil","Samir","Adnan","Jamal","Farouk","Riad","Zubair","Hadi"],
+      asian:   ["Ji-woo","Min-jun","Hyun","Seo-jun","Taro","Kenji","Yuki","Daiki","Ryu","Chen","Wei","Xiao","Zhang","Tanaka","Yamamoto","Nakamura","Ito","Kobayashi","Park","Kim","Choi","Lee","Ahn","Yoon","Shin","Oh"],
+      african: ["Kwame","Kofi","Yaw","Kojo","Nana","Mensah","Asante","Boateng","Osei","Amoah","Diallo","Traore","Coulibaly","Camara","Keita","Toure","Dembele","Cisse","Diop","Gueye","Sane","Sarr","Mane","Ndoye","Balde","Sylla"],
+      nordic:  ["Erik","Lars","Bjorn","Sven","Gunnar","Ragnar","Leif","Sigurd","Ivar","Ulf","Lindqvist","Johansson","Andersson","Eriksson","Karlsson","Larsson","Nilsson","Pettersson","Gustafsson","Olsson","Berg","Holm","Strand","Lund","Voss","Dahl"],
+      fantasy: ["Zyrax","Kaelos","Theron","Voryn","Aeldric","Nexus","Calder","Dravon","Sorin","Aethon","Vex","Krios","Tharion","Zelos","Malvyn","Draven","Ryke","Caelum","Zand","Orryn","Sylvar","Traxis","Quell","Pyrion","Stryx","Vance"]
+    };
+    NAMES.random = Object.values(NAMES).flat();
+
+    const ABILITY_GROUPS = [
+      {lbl:"Attacking",  fields:["Finishing","OffensiveAwareness","KickingPower","BallControl","Dribbling","TightPossession","Acceleration","Speed"]},
+      {lbl:"Passing",    fields:["LowPass","LoftedPass","Curl","PlaceKicking"]},
+      {lbl:"Physical",   fields:["Balance","PhysicalContact","Heading","Jump","Stamina","Aggression"]},
+      {lbl:"Defending",  fields:["DefensiveAwareness","BallWinning"]},
+      {lbl:"Goalkeeper", fields:["GKAwareness","GKCatching","GKClearing","GKReflexes","GKReach"]}
+    ];
+    const MISC_FIELDS = ["WeakFootUsage","WeakFootAcc","Form","InjuryResistance"];
+    const SKILLS = ["Trickster","MazingRun","SpeedingBullet","IncisiveRun","LongBallExpert","EarlyCross","LongRanger","ScissorsFeint","DoubleTouch","FlipFlap","MarseilleTurn","Sombrero","HeadingSpecial","LongRangeDrive","LongRangeShot","KnuckleShot","DippingShots","RisingShots","AcrobaticFinishing","FirstTimeShot","OneTouchPass","ThroughPassing","WeightedPass","PinpointCrossing","OutsideCurler","Rabona","NoLookPass","PenaltySpecialist","Gamesmanship","ManMarking","TrackBack","Interception","Captaincy","SuperSub","FightingSpirit"];
+
+    //  STATE
+    let players = mkPlayers();
+    let raceWeights = {};  // race.v → weight (0–10), relative
+    RACES.forEach(r => raceWeights[r.v] = 0);
+
+    let specialRoles = {fkShort:-1, fkLong:-1, corner:-1, penalty:-1};
+    let captainIdx = -1;
+
+    function mkPlayers(){
+      const default_shirtNumbers = [
+        1,   // GK
+        2, 6, 3, 4,  // CB, CB, LB, RB
+        5, 8, 11, 7,     // CMF, CMF, LMF/RMF
+        10, 9,       // RMF/LMF, CF 
+        12, 25,      // GK 
+        13, 14, 15, 16, 
+        17, 18, 20, 21,
+        19, 22, 23, 24, 26 
+      ];
+      return Array.from({length:26},(_,i)=>({
+        // shirt: i+1,
+        shirt: default_shirtNumbers[i],
+        name:"",
+        position: i===0||i===12||i===13 ? "GK" : "CMF",
+        playstyle:"",
+        race:"",
+        height:"", weight:"", age:"",
+        hair:"", eyes:"",
+        foot:"random",
+        isKey:false,
+        abilities:{}, skills:{},
+        expanded:false
+      }));
+    }
+
+    //  INIT
+    function init(){
+      buildRaceRows();
+      applyFormation();
+    }
+
+    //  ADVANCED TOGGLE
+    function toggleAdvanced(){
+      const sec = document.getElementById("adv-section");
+      const btn = document.getElementById("adv-toggle");
+      const collapsed = sec.classList.toggle("collapsed");
+      btn.classList.toggle("open", !collapsed);
+    }
+
+    //  RACE RATIO
+    function buildRaceRows(){
+      const container = document.getElementById("race-rows");
+      container.innerHTML = "";
+      RACES.forEach(r=>{
+        const w = raceWeights[r.v]||0;
+        const row = document.createElement("div");
+        row.className = "race-row";
+        row.innerHTML = `
+          <span class="race-swatch" style="background:${r.swatch}"></span>
+          <span class="race-name">${r.l}</span>
+          <div class="race-slider">
+            <input type="range" min="0" max="10" step="1" value="${w}"
+              oninput="setRaceW(${r.v},+this.value)">
+          </div>
+          <span class="race-val" id="rw-${r.v}">${w}</span>`;
+        container.appendChild(row);
+      });
+    }
+
+    function setRaceW(id, val){
+      raceWeights[id] = val;
+      document.getElementById(`rw-${id}`).textContent = val;
+    }
+    function equalizeRaces(){ RACES.forEach(r=>raceWeights[r.v]=5); buildRaceRows(); }
+    function clearRaces(){ RACES.forEach(r=>raceWeights[r.v]=0); buildRaceRows(); }
+    function applyRaceDistribution(){
+      const raceAmount = RACES.length;
+      const totalWeight = Object.values(raceWeights).reduce((a, b) => a + b, 0);
+
+      if (totalWeight === 0) {
+        players.forEach(p => p.race = Math.floor(Math.random() * raceAmount) + 1); // Select random race
+      } else {
+        const pool = [];
+        const activeRaces = RACES.filter(r => raceWeights[r.v] > 0);
+
+        for (let i = 0; i < 26; i++) {
+          let random = Math.random() * totalWeight;
+          let selectedRace = 11;
+
+          for (let r of activeRaces) {
+            if (random < raceWeights[r.v]) {
+              selectedRace = r.v;
+              break;
+            }
+            random -= raceWeights[r.v];
+          }
+          pool.push(selectedRace);
+        }
+        
+        players.forEach((p, i) => p.race = pool[i]);
+      }
+
+      // const pool = [];
+      // RACES.forEach(r=>{ for(let i=0;i<raceWeights[r.v];i++) pool.push(r.v); });
+      // shuffleArr(pool);
+      // players.forEach((p,i)=>p.race = i<pool.length ? pool[i] : 11);
+      renderTable(); updateExport();
+      toast("✓ Race distribution applied");
+    }
+
+    function pickRaceFromWeights(){
+      const pool = [];
+      RACES.forEach(r=>{ for(let i=0;i<(raceWeights[r.v]||0);i++) pool.push(r.v); });
+      if(!pool.length) return "";  // fully random
+      return pool[Math.floor(Math.random()*pool.length)];
+    }
+
+    // FORMATION
+    function applyFormation(){
+      const f = v("cfg-formation");
+      const pos = FORMATIONS[f]||FORMATIONS["4-3-3"];
+      players.forEach((p,i)=>{
+        p.position = pos[i]||"CMF";
+        p.playstyle = "";
+      });
+      // Lock GKs
+      players[0].position  = "GK";
+      players[12].position = "GK";
+      players[12].position = "GK";
+
+      renderTable();
+      renderFormationBar();
+      refreshSpecialSelects();
+      updateAvgHeights();
+      updateExport();
+    }
+
+    function renderFormationBar(){
+      const counts={};
+      players.slice(0,11).forEach(p=>counts[p.position]=(counts[p.position]||0)+1);
+      let html=`<span style="color:var(--text3);font-size:.7rem;margin-right:.2rem">${v("cfg-formation")} ·</span>`;
+      POSITIONS.forEach(pos=>{
+        if(counts[pos]){
+          const g=POS_GROUP[pos]||"mid";
+          html+=`<span class="pchip ${POS_CHIP[g]}">${counts[pos]} ${pos}</span>`;
+        }
+      });
+      document.getElementById("formation-bar").innerHTML=html;
+    }
+
+    //  SET PIECES
+    function refreshSpecialSelects(){
+      const ids  = ["sp-fk-short","sp-fk-long","sp-corner","sp-penalty"];
+      const keys = ["fkShort","fkLong","corner","penalty"];
+      ids.forEach((sid,ri)=>{
+        const sel = document.getElementById(sid);
+        const cur = specialRoles[keys[ri]];
+        sel.innerHTML = `<option value="">— not set —</option>`;
+        players.slice(0,11).forEach((p,i)=>{
+          const lbl = (p.name.trim()||`#${p.shirt}`) + ` (${p.position})`;
+          sel.innerHTML += `<option value="${i}"${cur===i?" selected":""}>${lbl}</option>`;
+        });
+      });
+    }
+
+    function updateSpecial(){
+      const parse = id => { const n=parseInt(v(id)); return isNaN(n)?-1:n; };
+      specialRoles.fkShort = parse("sp-fk-short");
+      specialRoles.fkLong  = parse("sp-fk-long");
+      specialRoles.corner  = parse("sp-corner");
+      specialRoles.penalty = parse("sp-penalty");
+      updateExport();
+    }
+
+    function updatePositionClass(selectElement) {
+      const position = selectElement.value;
+      const group = POS_GROUP[position];
+      const newClass = group ? POS_CHIP[group] : "";
+
+      selectElement.classList.remove("pc-gk", "pc-def", "pc-mid", "pc-att");
+
+      if (newClass) {
+        selectElement.classList.add(newClass);
+      }
+    }
+    //  RENDER TABLE
+    function renderTable(){
+      const tbody = document.getElementById("squad-body");
+      tbody.innerHTML = "";
+
+      players.forEach((p,i)=>{
+        // Section dividers
+        if(i===0){
+          addDivider(tbody, "sq-starters", "First Eleven");
+        }
+        if(i===11){
+          addDivider(tbody, "sq-subs", "Substitutes");
+        }
+
+        const isCap = captainIdx===i;
+        const isKey = p.isKey;
+
+        const tr = document.createElement("tr");
+        tr.id = `r${i}`;
+        tr.classList.add("data-row");
+        if(isCap) tr.classList.add("cap-row");
+        if(isKey) tr.classList.add("key-row");
+
+        const raceOpts = `<option value="">Random</option>` +
+          RACES.map(r=>`<option value="${r.v}"${p.race==r.v?" selected":""}>${r.l}</option>`).join("");
+
+        const posLocked = i===0||i===11||i===12;
+        // const posOpts = POSITIONS.map(pos=>
+        //   `<option value="${pos}"${p.position===pos?" selected":""}>${pos}</option>`).join("");
+        const posOpts = POSITIONS.map(pos => {
+          const group = POS_GROUP[pos]; 
+          const className = group ? POS_CHIP[group] : ""; 
+          const isSelected = p.position === pos ? " selected" : "";
+          return `<option value="${pos}" class="${className}"${isSelected}>${pos}</option>`;
+        }).join("");
+
+        const psOpts = `<option value="">Random</option>` +
+          (PLAYSTYLES[p.position]||[]).map(s=>
+            `<option value="${s.v}"${p.playstyle==s.v?" selected":""}>${s.l}</option>`).join("");
+
+        const footOpts = `
+          <option value="random"${p.foot==="random"?" selected":""}>Rand</option>
+          <option value="Right"${p.foot==="Right"?" selected":""}>Right</option>
+          <option value="Left"${p.foot==="Left"?" selected":""}>Left</option>`;
+
+        const positionClass = p.position ? POS_CHIP[POS_GROUP[p.position]] : "";
+        tr.innerHTML = `
+          <td><input type="number" class="c-shirt" style="width:48px;text-align:center;font-family:var(--mono)"
+            min="1" max="99" value="${p.shirt}" oninput="sf(${i},'shirt',+this.value)"></td>
+            <td>
+              <input type="text" class="c-name" placeholder="Name…" value="${esc(p.name)}"
+              oninput="sf(${i},'name',this.value)">
+            </td>
+          <td>
+            <!-- <select class="c-pos" onchange="sf(${i},'position',this.value)"${posLocked?" disabled":""}>
+              ${posOpts}
+            </select> -->
+            <select
+              class="c-pos ${positionClass}"
+              onchange="sf(${i}, 'position', this.value); updatePositionClass(this)"
+              ${posLocked ? "disabled" : ""}
+              >
+              ${posOpts}
+            </select>
+          </td>
+          <td>
+            <select class="c-race" onchange="sf(${i},'race',this.value)">${raceOpts}</select>
+          </td>
+          <td>
+            <input type="number" class="c-height" style="width:54px" placeholder="cm"
+            min="130" max="210" value="${p.height}" oninput="sf(${i},'height',this.value)">
+          </td>
+          <td>
+            <select class="c-ps" onchange="sf(${i},'playstyle',this.value)">${psOpts}</select>
+            </td>
+          <td>
+            <select class="c-foot" onchange="sf(${i},'foot',this.value)">${footOpts}</select>
+          </td>
+          <td class="c-key">
+            <button class="icon-btn key${isKey?" on":""}" onclick="toggleKey(${i})" title="Key player">Key</button>
+          </td>
+          <td class="c-cap">
+            <button class="icon-btn cap${isCap?" on":""}" onclick="toggleCaptain(${i})" title="Captain">C</button>
+          </td>
+          <td>
+            <button class="dtoggle${p.expanded?" open":""}" onclick="toggleExpand(${i})">···</button>
+          </td>`;
+
+        tbody.appendChild(tr);
+
+        // Detail row
+        const dtr = document.createElement("tr");
+        dtr.classList.add("drow");
+        const dtd = document.createElement("td");
+        dtd.colSpan = 10;
+        dtd.innerHTML = `<div class="dpanel${p.expanded?" open":""}" id="dp${i}">${buildDetail(i)}</div>`;
+        dtr.appendChild(dtd);
+        tbody.appendChild(dtr);
+      });
+
+      updateAvgHeights();
+    }
+
+    function addDivider(tbody, cls, label){
+      const tr = document.createElement("tr");
+      tr.className = "squad-divider";
+      tr.innerHTML = `<td colspan="10"><div class="squad-divider-inner ${cls}">${label}</div></td>`;
+      tbody.appendChild(tr);
+    }
+
+    //  DETAIL PANEL
+    function buildDetail(i){
+      const p = players[i];
+      let html = `<div class="dgrid">`;
+
+      // Basic
+      html += `<div class="dsec">Basic</div>
+        <div class="dfield"><div class="dlabel">Age</div>
+          <input class="dinput" type="number" min="15" max="50" placeholder="auto" value="${p.age}"
+            oninput="sf(${i},'age',this.value)"></div>
+        <div class="dfield"><div class="dlabel">Weight kg</div>
+          <input class="dinput" type="number" min="30" max="129" placeholder="auto" value="${p.weight}"
+            oninput="sf(${i},'weight',this.value)"></div>`;
+
+      // Hair with swatch
+      const hairOptsAdv = `<option value="">Random</option>` +
+        HAIR_COLORS.map(h=>`<option value="${h.v}"${p.hair===h.v?" selected":""}>${h.l}</option>`).join("");
+      const curHair = HAIR_COLORS.find(h=>h.v===p.hair);
+      const hairHex = curHair ? curHair.hex : "#22ff00";
+      html += `<div class="dfield"><div class="dlabel">Hair Color</div>
+        <div class="hair-picker-wrap">
+          <span class="hair-swatch" id="hs-${i}" style="background:${hairHex}"></span>
+          <select onchange="setHair(${i},this.value,this)">${hairOptsAdv}</select>
+        </div></div>`;
+
+      // Eyes
+      // const eyeOptsAdv = `<option value="">Random</option>` +
+      //   EYE_COLORS.map(e=>`<option value="${e.v}"${p.eyes===e.v?" selected":""}>${e.l}</option>`).join("");
+      // html += `<div class="dfield"><div class="dlabel">Eye Color</div>
+      //   <select class="dinput" onchange="sf(${i},'eyes',this.value)">${eyeOptsAdv}</select></div>`;
+
+      // Eyes with swatch
+      const eyeOptsAdv = `<option value="">Random</option>` +
+        EYE_COLORS.map(e => `<option value="${e.v}"${p.eyes === e.v ? " selected" : ""}>${e.l}</option>`).join("");
+      const curEye = EYE_COLORS.find(e => e.v === p.eyes);
+      const eyeHex = curEye ? curEye.hex : "#22ff00"; // Usar un color por defecto si no hay selección
+      html += `<div class="dfield"><div class="dlabel">Eye Color</div>
+        <div class="hair-picker-wrap"> <!-- Reutilizamos la misma clase CSS -->
+          <span class="hair-swatch" id="es-${i}" style="background:${eyeHex}"></span>
+          <select onchange="setEye(${i}, this.value, this)">${eyeOptsAdv}</select>
+        </div></div>`;
+
+      // Abilities
+      // ABILITY_GROUPS.forEach(g=>{
+      //   html += `<div class="dsec">${g.lbl}</div>`;
+      //   g.fields.forEach(f=>{
+      //     html += `<div class="dfield">
+      //       <div class="dlabel">${f}</div>
+      //       <input class="dinput" type="number" min="1" max="99" placeholder="auto"
+      //         value="${p.abilities[f]!==undefined?p.abilities[f]:''}"
+      //         oninput="setAb(${i},'${f}',this.value)">
+      //     </div>`;
+      //   });
+      // });
+
+      // html += `<div class="dsec">Misc</div>`;
+      // MISC_FIELDS.forEach(f=>{
+      //   html += `<div class="dfield"><div class="dlabel">${f}</div>
+      //     <input class="dinput" type="number" min="1" max="8" placeholder="auto"
+      //       value="${p.abilities[f]!==undefined?p.abilities[f]:''}"
+      //       oninput="setAb(${i},'${f}',this.value)"></div>`;
+      // });
+
+      // Skills
+      // html += `<div class="dsec">Player Skills</div><div class="skills-wrap">`;
+      // SKILLS.forEach(s=>{
+      //   const on = p.skills[s]===true;
+      //   html += `<button class="sktoggle${on?" on":""}" onclick="toggleSkill(${i},'${s}',this)">${s}</button>`;
+      // });
+      html += `</div></div>`;
+      return html;
+    }
+    //  SETTERS
+    function sf(i,k,val){
+      players[i][k] = val;
+      if(k==="position"){
+        players[i].playstyle="";
+        renderTable();
+        renderFormationBar();
+        refreshSpecialSelects();
+        return;
+      }
+      if(k==="name") refreshSpecialSelects();
+      if(k==="height") updateAvgHeights();
+      updateExport();
+    }
+
+    function setHair(i, val, sel){
+      players[i].hair = val;
+      const swatch = document.getElementById(`hs-${i}`);
+      if(swatch){
+        const entry = HAIR_COLORS.find(h=>h.v===val);
+        swatch.style.background = entry ? entry.hex : "#22ff00";
+      }
+      updateExport();
+    }
+
+    function setEye(i, value, selectElement) {
+      sf(i, 'eyes', value);
+      const curEye = EYE_COLORS.find(e => e.v == value);
+      const eyeHex = curEye ? curEye.hex : "#22ff00";
+      document.getElementById(`es-${i}`).style.background = eyeHex;
+    }
+
+
+    function toggleKey(i){
+      players[i].isKey = !players[i].isKey;
+      const tr = document.getElementById(`r${i}`);
+      const btn = tr?.querySelector(".icon-btn.key");
+      if(btn) btn.classList.toggle("on", players[i].isKey);
+      if(tr) tr.classList.toggle("key-row", players[i].isKey);
+      // Preserve captain class
+      if(captainIdx===i) tr.classList.add("cap-row");
+      updateExport();
+    }
+
+    function toggleCaptain(i){
+      if(captainIdx===i){
+        // unset
+        players[captainIdx] && (()=>{})();
+        const old = document.getElementById(`r${captainIdx}`);
+        if(old){ old.classList.remove("cap-row"); old.querySelector(".icon-btn.cap")?.classList.remove("on"); }
+        captainIdx = -1;
+      } else {
+        // unset previous
+        if(captainIdx>=0){
+          const old = document.getElementById(`r${captainIdx}`);
+          if(old){ old.classList.remove("cap-row"); old.querySelector(".icon-btn.cap")?.classList.remove("on"); }
+        }
+        captainIdx = i;
+        const tr = document.getElementById(`r${i}`);
+        if(tr){ tr.classList.add("cap-row"); tr.querySelector(".icon-btn.cap")?.classList.add("on"); }
+      }
+      updateExport();
+    }
+
+    function toggleExpand(i){
+      players[i].expanded = !players[i].expanded;
+      const dp = document.getElementById("dp"+i);
+      const btn = document.querySelector(`#r${i} .dtoggle`);
+      if(dp){ dp.classList.toggle("open", players[i].expanded); if(players[i].expanded) dp.innerHTML=buildDetail(i); }
+      if(btn) btn.classList.toggle("open", players[i].expanded);
+    }
+
+    function setAb(i,k,val){
+      if(val===""||val===null) delete players[i].abilities[k];
+      else players[i].abilities[k]=parseInt(val);
+      updateExport();
+    }
+
+    function toggleSkill(i,s,el){
+      const on=el.classList.toggle("on");
+      if(on) players[i].skills[s]=true; else delete players[i].skills[s];
+      updateExport();
+    }
+
+    //  HEIGHTS
+    function updateAvgHeights(){
+      const hOf = arr => arr.map(p=>parseInt(p.height)||0).filter(h=>h>0);
+      const avg = arr => arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : null;
+      const s = avg(hOf(players.slice(0,11)));
+      const u = avg(hOf(players.slice(11)));
+      const a = avg(hOf(players));
+      document.getElementById("avg-start").textContent = s ? s+"cm" : "–";
+      document.getElementById("avg-sub").textContent   = u ? u+"cm" : "–";
+      document.getElementById("avg-all").textContent   = a ? a+"cm" : "–";
+    }
+
+    //  AUTO FILL
+    function autoFillAll(){
+      const bank = NAMES[v("cfg-lang")]||NAMES.random;
+      players.forEach(p=>{
+        if(!p.name.trim()) p.name = rndPick(bank)+" "+rndPick(bank);
+        if(!p.height) p.height = autoH(p.position);
+        if(!p.weight) p.weight = autoW(p.height||178);
+        if(!p.age) p.age = rnd(18,33);
+        if(!p.foot||p.foot==="random") p.foot = Math.random()<.15?"Left":"Right";
+        // race from weights distribution
+        if(!p.race) p.race = pickRaceFromWeights();
+      });
+      renderTable();
+      refreshSpecialSelects();
+      updateExport();
+      toast("⚡ Auto-filled all empty fields");
+    }
+
+    function autoNames(){
+      const bank = NAMES[v("cfg-lang")]||NAMES.random;
+      players.forEach(p=>p.name=rndPick(bank)+" "+rndPick(bank));
+      renderTable(); refreshSpecialSelects(); updateExport();
+    }
+
+    function clearAll(){
+      if(!confirm("Reset all player data?")) return;
+      players = mkPlayers();
+      captainIdx = -1;
+      specialRoles = {fkShort:-1,fkLong:-1,corner:-1,penalty:-1};
+      RACES.forEach(r=>raceWeights[r.v]=0);
+      buildRaceRows();
+      applyFormation();
+      toast("✓ Reset");
+    }
+    
+    //  EXPORT
+    function buildExport(){
+      const teamName = document.getElementById("team-name").value.trim();
+      const lines = players.map((p,i)=>{
+        const parts=[];
+        parts.push(`"Id": "xxx"`);
+        parts.push(`"Country": "${teamName}"`);
+        if(p.name.trim())   parts.push(`"Name": ${JSON.stringify(p.name)}`);
+        if(p.position)      parts.push(`"Position": "${p.position}"`);
+        if(p.height)        parts.push(`"Height": ${p.height}`);
+        if(p.weight)        parts.push(`"Weight": ${p.weight}`);
+        if(p.age)           parts.push(`"Age": ${p.age}`);
+        if(p.foot&&p.foot!=="random") parts.push(`"Foot": "${p.foot}"`);
+        if(p.race)          parts.push(`"Race": ${p.race}`);
+        if(p.playstyle)     parts.push(`"PlayingStyle": ${p.playstyle}`);
+        if(p.hair)          parts.push(`"HairColour": ${p.hair}`);
+        if(p.eyes)          parts.push(`"IrisColour": ${p.eyes}`);
+
+        Object.entries(p.abilities).forEach(([k,val])=>{
+          if(val!==undefined&&val!=="") parts.push(`"${k}": ${val}`);
+        });
+        Object.entries(p.skills).forEach(([k,on])=>{
+          if(on===true) parts.push(`"${k}": "True"`);
+        });
+
+        const tags=[];
+        if(p.shirt)                 tags.push(`shirt: ${p.shirt}`);
+        if(p.isKey)                 tags.push("KEY PLAYER");
+        if(captainIdx===i)          tags.push("Captain");
+        if(specialRoles.fkShort===i) tags.push("Short FK");
+        if(specialRoles.fkLong===i)  tags.push("Long FK");
+        if(specialRoles.corner===i)  tags.push("Corners");
+        if(specialRoles.penalty===i) tags.push("Penalty");
+
+        const comment = tags.length ? `  # ${tags.join("  |  ")}` : "";
+        return `    {${comment}\n        ${parts.join(",\n        ")}\n    }`;
+      });
+
+      let out = "";
+      out += `team = [\n${lines.join(",\n")}\n]`;
+      return out;
+    }
+
+    function updateExport(){
+      const code = buildExport();
+      const safe = code.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      const col = safe
+        .replace(/"([^"]+)":/g,'<span style="color:#82aaff">"$1"</span>:')
+        .replace(/: "([^"]+)"/g,': <span style="color:#c3e88d">"$1"</span>')
+        .replace(/: (\d+)/g,': <span style="color:#f78c6c">$1</span>')
+        .replace(/(#[^\n]*)/g,'<span style="color:#546e57">$1</span>')
+        .replace(/\bteam\b/g,'<span style="color:#82aaff">team</span>');
+      document.getElementById("export-code").innerHTML = col;
+    }
+
+    function copyExport(){
+      const code = buildExport();
+      navigator.clipboard.writeText(code).then(()=>{
+        showOk(); toast("Copied, paste it in the form.");
+      }).catch(()=>{
+        const ta=document.createElement("textarea");
+        ta.value=code; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); document.body.removeChild(ta);
+        showOk(); toast("Copied");
+      });
+    }
+    function showOk(){
+      const el=document.getElementById("copy-ok");
+      el.style.display="inline";
+      setTimeout(()=>el.style.display="none",3000);
+    }
+
+    //  HELPERS
+    function v(id){return document.getElementById(id).value}
+    function esc(s){return String(s).replace(/"/g,"&quot;").replace(/</g,"&lt;")}
+    function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+    function rndPick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+    function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3200)}
+    function toggleEl(id){const el=document.getElementById(id);el.style.display=el.style.display==="none"?"":"none"}
+    function shuffleArr(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
+    function autoH(pos){
+      const r={GK:[183,200],CB:[177,196],LB:[170,184],RB:[170,184],
+        DMF:[173,188],CMF:[170,185],LMF:[168,180],RMF:[168,180],
+        AMF:[168,182],LWF:[165,180],RWF:[165,180],SS:[172,185],CF:[172,196]};
+      const [lo,hi]=r[pos]||[170,185]; return rnd(lo,hi);
+    }
+    function autoW(h){return Math.round((20+Math.random()*5)*(h/100)*(h/100))}
+
+    // START
+    init();
+    </script>
+  </body>
+</html>
