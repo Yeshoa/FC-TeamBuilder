@@ -46,6 +46,17 @@ main{position:relative;z-index:1;max-width:1440px;margin:0 auto;}
   display:inline-flex;align-items:center;gap:.35rem;white-space:nowrap}
 .btn-primary{background:var(--green);color:var(--bg)}.btn-primary:hover{background:#69ff8e;transform:translateY(-1px)}
 .btn-secondary{background:transparent;color:var(--green);border:1px solid var(--green)}.btn-secondary:hover{background:var(--gdim)}
+.btn-tertiary {
+  background: rgba(var(--green-rgb), 0.08); 
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-tertiary:hover {
+  background: rgba(var(--green-rgb), 0.15); 
+  color: var(--text2);
+  border-color: var(--border2);
+}
+
 .btn-ghost{background:transparent;color:var(--text3);border:1px solid var(--border)}.btn-ghost:hover{color:var(--text2);border-color:var(--border2)}
 .btn-warning{background:transparent;color:var(--red);border:1px solid var(--red)}.btn-warning:hover{background:var(--red);color:var(--bg);transform:translateY(-1px)}
 .btn-sm{font-size:.66rem;padding:.3rem .58rem}
@@ -136,16 +147,16 @@ tr.cap-row.key-row td{background:rgba(255,160,0,.045)!important}
 td input,td select{padding:.20rem .30rem;font-size:.76rem}
 
 /* col widths */
-.c-shirt{width:48px}
+.c-shirt{width:48px;}
 .c-name{width:130px; min-width:100px}
 .c-pos{width:55px}
 .c-race{width:100px}
 .c-height{width:54px}
-.c-ps{width:108px}
+.c-ps{width:80px}
 .c-foot{width:64px}
 .c-key{width:28px;text-align:center}
 .c-cap{width:28px;text-align:center}
-.c-adv{width:32px}
+.c-adv{width:80px;min-width: 80px;}
 
 /* icon buttons */
 .icon-btn{background:none;border:1px solid transparent;cursor:pointer;
@@ -157,14 +168,44 @@ td input,td select{padding:.20rem .30rem;font-size:.76rem}
 .icon-btn.cap.on{color:var(--warn);border-color:rgba(255,214,0,.45);background:rgba(255,214,0,.09)}
 
 /* detail toggle */
-.dtoggle{background:none;border:1px solid var(--border);cursor:pointer;
+/* .dtoggle{background:none;border:1px solid var(--border);cursor:pointer;
   color:var(--text3);font-family:var(--mono);font-size:.58rem;padding:2px 5px;border-radius:2px;transition:all .13s}
 .dtoggle:hover{border-color:var(--green);color:var(--green)}
-.dtoggle.open{border-color:var(--green);color:var(--green);background:var(--gdim)}
+.dtoggle.open{border-color:var(--green);color:var(--green);background:var(--gdim)} */
+/* Detail toggle (aligned with .btn-ghost style) */
+.dtoggle {
+  background: transparent;
+  color: var(--text3);
+  border: 1px solid var(--border);
+  font-family: var(--head); 
+  font-weight: 700; 
+  font-size: .66rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding:.18rem .42rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  white-space: nowrap;
+}
+
+.dtoggle:hover {
+  color: var(--text2);
+  border-color: var(--border2);
+}
+
+.dtoggle.open {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--gdim);
+}
 
 /* DETAIL PANEL */
 .drow td{padding:0!important}
-.dpanel{display:none;padding:.75rem .9rem;background:var(--bg2);border-top:1px solid var(--border2);animation:fadeIn .18s ease}
+.dpanel{display:none;padding:.75rem .9rem;background:var(--bg2);border-top:1px solid var(--border2);}
 .dpanel.open{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
 .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:.42rem}
@@ -190,6 +231,120 @@ td input,td select{padding:.20rem .30rem;font-size:.76rem}
   background:transparent;color:var(--text3);cursor:pointer;transition:all .12s;user-select:none}
 .sktoggle:hover{border-color:var(--border2);color:var(--text2)}
 .sktoggle.on{background:var(--gdim);border-color:var(--green);color:var(--green)}
+
+/* SQUAD CONTROLS */
+.squad-controls{
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+  margin-bottom:1rem;
+  padding:0.75rem;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:4px;
+}
+.squad-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+  align-items:center;
+}
+.squad-actions .btn{
+  flex:1;
+  min-width:120px;
+}
+.squad-legend{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:.5rem;
+  padding:.5rem 0;
+}
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:.35rem;
+  font-size:.72rem;
+  color:var(--text2);
+  white-space:nowrap;
+}
+.legend-symbol{
+  font-family:var(--mono);
+  color:var(--text3);
+  font-weight:400;
+}
+.legend-symbol.key{
+  color:var(--red);
+  font-family:var(--head);
+  font-weight:700;
+  font-size:.65rem;
+}
+.legend-symbol.captain{
+  color:var(--warn);
+  font-family:var(--head);
+  font-weight:700;
+  font-size:.65rem;
+}
+.legend-text{
+  color:var(--text3);
+}
+.squad-hint{
+  display:none;
+  font-size:.65rem;
+  color:var(--text3);
+  text-align:center;
+  padding:.35rem 0;
+}
+
+/* RESPONSIVE SQUAD CONTROLS */
+@media(max-width:768px){
+  .squad-controls{
+    padding:0.6rem;
+    gap:.55rem;
+  }
+  .squad-actions{
+    justify-content:space-between;
+    gap:.35rem;
+  }
+  .squad-actions .btn{
+    font-size:.6rem;
+    padding:.16rem .35rem;
+    min-width:90px;
+  }
+  .squad-legend{
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:.4rem;
+  }
+  .legend-item{
+    font-size:.68rem;
+    gap:.3rem;
+  }
+}
+@media(max-width:600px){
+  .squad-controls{
+    padding:0.5rem;
+    gap:.45rem;
+  }
+  .squad-actions{
+    gap:.3rem;
+  }
+  .squad-actions .btn{
+    font-size:.55rem;
+    padding:.14rem .3rem;
+    min-width:auto;
+    flex:0 1 calc(50% - 0.15rem);
+  }
+  .squad-legend{
+    grid-template-columns:1fr 1fr;
+    gap:.3rem;
+  }
+  .legend-item{
+    font-size:.63rem;
+    gap:.25rem;
+  }
+  .squad-hint{
+    display:block;
+  }
+}
 
 /* EXPORT */
 .export-box{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1rem;margin-top:1rem}
@@ -543,3 +698,68 @@ td input,td select{padding:.20rem .30rem;font-size:.76rem}
     white-space: nowrap;
   }
 } */
+ /* Base style for swap buttons */
+.swap-btn {
+  font-family: var(--head);
+  font-weight: 700;
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding:.14rem .32rem;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+/* Hover state (similar to .btn-tertiary:hover) */
+.swap-btn:hover:not(.incompatible) {
+  background: var(--gdim);
+  color: var(--text2);
+  border-color: var(--border2);
+}
+
+/* Player selected for swapping (similar to .btn-warning) */
+.swap-btn.pending {
+  background: var(--red);
+  color: var(--bg);
+  border-color: var(--red);
+  font-weight: 700;
+  animation: swapPulse .9s ease-in-out infinite alternate;
+}
+
+/* Valid swap target (similar to .btn-primary) */
+.swap-btn.compatible {
+  background: var(--green);
+  color: var(--bg);
+  border-color: var(--green);
+}
+.swap-btn.compatible:hover {
+  background: #69ff8e; /* Same as .btn-primary:hover */
+}
+
+/* Incompatible target (GK ↔ non-GK) */
+.swap-btn.incompatible {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--text3);
+  border-color: var(--border);
+}
+
+/* Row highlight when pending */
+tr.swap-source-row td {
+  background: rgba(230, 126, 0, 0.07) !important;
+}
+
+/* Animation for pending state */
+@keyframes swapPulse {
+  from { box-shadow: 0 0 0 0 rgba(var(--red-rgb), 0.5); }
+  to   { box-shadow: 0 0 0 7px rgba(var(--red-rgb), 0); }
+}

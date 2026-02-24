@@ -6,6 +6,7 @@
     <title>Forest Cup — Team Builder</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body>
     <header>
@@ -30,10 +31,10 @@
       
       <!-- BASIC CONFIG -->
       <div class="sec-head">
-        <div class="sec-title">Config</div>
-        <div class="row">
+        <div class="sec-title">Team Config</div>
+        <!-- <div class="row">
           <button class="btn btn-ghost btn-xs" onclick="autoNames()">↺ Names</button>
-        </div>
+        </div> -->
       </div>
       
       <div class="config-panel">
@@ -57,7 +58,7 @@
             </select>
           </div>
           <div class="cfg-group">
-            <div class="cfg-label">Name Language</div>
+            <div class="cfg-label">Names Language</div>
             <select id="cfg-lang">
               <option value="random">Random mix</option>
               <option value="latin">Latin / Spanish</option>
@@ -81,7 +82,7 @@
           <!-- ADVANCED CONFIG TOGGLE -->
           <div class="cfg-group" style="grid-column:1/-1">
             <button class="collapse-btn" id="adv-toggle" onclick="toggleAdvanced()">
-              <span class="arr">▾</span> Advanced Config
+              <span class="arr">▾</span> Player Config
             </button>
           </div>
         </div>
@@ -94,34 +95,15 @@
           <div class="race-panel">
             <div id="race-rows"></div>
             <div class="row" style="margin-top:.55rem;gap:.4rem">
-              <button class="btn btn-ghost btn-xs" onclick="equalizeRaces()">Equalize</button>
+              <!-- <button class="btn btn-ghost btn-xs" onclick="equalizeRaces()">Equalize</button> -->
+              <button class="btn btn-ghost btn-xs" onclick="randomizeRaces()">Randomize</button>
+              <button class="btn btn-ghost btn-xs" onclick="editRaces(-1)">-1</button>
+              <button class="btn btn-ghost btn-xs" onclick="editRaces(1)">+1</button>
               <button class="btn btn-ghost btn-xs" onclick="clearRaces()">Clear all</button>
               <button class="btn btn-ghost btn-xs" onclick="applyRaceDistribution()">Apply to squad</button>
               <span class="dim" style="font-size:.68rem;margin-left:.25rem">Auto-fill will use these weights</span>
             </div>
           </div>
-
-          <!-- Set pieces -->
-          <div class="cfg-label" style="margin-top:.85rem;margin-bottom:.35rem">Set Pieces &amp; Special Roles</div>
-          <div class="sp-grid">
-            <div class="sp-item">
-              <div class="sp-label">Short Free Kick</div>
-              <select class="sp-sel" id="sp-fk-short" onchange="updateSpecial()"><option value="">— not set —</option></select>
-            </div>
-            <div class="sp-item">
-              <div class="sp-label">Long Free Kick</div>
-              <select class="sp-sel" id="sp-fk-long" onchange="updateSpecial()"><option value="">— not set —</option></select>
-            </div>
-            <div class="sp-item">
-              <div class="sp-label">Corner Kicks</div>
-              <select class="sp-sel" id="sp-corner" onchange="updateSpecial()"><option value="">— not set —</option></select>
-            </div>
-            <div class="sp-item">
-              <div class="sp-label">Penalty Kicks</div>
-              <select class="sp-sel" id="sp-penalty" onchange="updateSpecial()"><option value="">— not set —</option></select>
-            </div>
-          </div>
-
         </div><!-- /adv-section -->
       </div><!-- /config-panel -->
 
@@ -136,7 +118,36 @@
       <!-- SQUAD -->
       <div class="sec-head">
         <div class="sec-title">Squad · 26 Players</div>
-        <span class="dim" style="font-size:.68rem">Key = key player &nbsp;·&nbsp;C = Captain &nbsp;·&nbsp; ··· advanced</span>
+      </div>
+      
+      <div class="squad-controls">
+        <div class="squad-actions">
+          <button class="btn btn-tertiary btn-xs" onclick="autoNames()">Regenerate Names</button>
+          <button class="btn btn-tertiary btn-xs" onclick="globalIncreaseAge(-1)">−1 Age</button>
+          <button class="btn btn-tertiary btn-xs" onclick="globalIncreaseAge(1)">+1 Age</button>
+          <button class="btn btn-tertiary btn-xs" onclick="toggleExpandAll()">Expand All</button>
+        </div>
+        
+        <div class="squad-legend">
+          <div class="legend-item">
+            <span class="legend-symbol">⇄</span>
+            <span class="legend-text">= Swap position</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol key">Key</span>
+            <span class="legend-text">= Highest-rated</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol captain">C</span>
+            <span class="legend-text">= Captain</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol">···</span>
+            <span class="legend-text">= Advanced</span>
+          </div>
+        </div>
+        
+        <div class="squad-hint">Swipe to see full table →</div>
       </div>
 
       <div class="table-wrap">
@@ -144,7 +155,8 @@
         <thead>
           <tr>
             <th class="c-shirt">#</th>
-            <th class="c-name">Name</th>
+            <th class="c-name">Name 
+            </th>
             <th class="c-pos">Pos</th>
             <th class="c-race">Race</th>
             <th class="c-height">Height (cm)</th>
@@ -157,6 +169,29 @@
         </thead>
         <tbody id="squad-body"></tbody>
       </table>
+      <!-- Set pieces -->
+          <div class="cfg-label" style="margin-top:.85rem;margin-bottom:.35rem">Set Pieces &amp; Special Roles
+            <button class="btn btn-ghost btn-xs" onclick="randomizeSpecial()">Randomize</button>
+            <button class="btn btn-ghost btn-xs" onclick="clearSpecial()">Clear</button>
+          </div>
+          <div class="sp-grid">
+            <div class="sp-item">
+              <div class="sp-label">Short Free Kick</div>
+              <select class="sp-sel" id="sp-fk-short" onchange="updateSpecial()"><option value="-1">— not set —</option></select>
+            </div>
+            <div class="sp-item">
+              <div class="sp-label">Long Free Kick</div>
+              <select class="sp-sel" id="sp-fk-long" onchange="updateSpecial()"><option value="-1">— not set —</option></select>
+            </div>
+            <div class="sp-item">
+              <div class="sp-label">Corner Kicks</div>
+              <select class="sp-sel" id="sp-corner" onchange="updateSpecial()"><option value="-1">— not set —</option></select>
+            </div>
+            <div class="sp-item">
+              <div class="sp-label">Penalty Kicks</div>
+              <select class="sp-sel" id="sp-penalty" onchange="updateSpecial()"><option value="-1">— not set —</option></select>
+            </div>
+          </div>
       </div>
 
       <!-- EXPORT -->
@@ -234,7 +269,7 @@
       if(!preset) return;
       if(preset.country) document.getElementById("team-name").value=preset.country;
       players=mkPlayers();
-      captainIdx=-1;
+      // captainIdx=-1;
       specialRoles={fkShort:-1,fkLong:-1,corner:-1,penalty:-1};
       preset.players.forEach((src,i)=>{
         if(i>=players.length) return;
@@ -251,6 +286,11 @@
         if(src.foot     !==undefined) p.foot     =src.foot;
         if(src.playstyle!==undefined) p.playstyle=String(src.playstyle);
         if(src.id !== undefined) {p.id = src.id;}
+        if(src.captain !== undefined) setCaptain(i);
+        if(src.fkShort !== undefined) specialRoles.fkShort = i;
+        if(src.fkLong  !== undefined) specialRoles.fkLong  = i;
+        if(src.corner  !== undefined) specialRoles.corner  = i;
+        if(src.penalty !== undefined) specialRoles.penalty = i;
       });
       players[0].position="GK"; players[11].position="GK"; players[12].position="GK";
       renderTable(); renderFormationBar(); refreshSpecialSelects(); updateAvgHeights(); updateExport();
@@ -280,36 +320,45 @@
     };
 
     const RACES = [
-      {v:1, l:"Nordic",         swatch:"#d4b89a"},
-      {v:2, l:"Mediterranean",  swatch:"#c49a6c"},
-      {v:3, l:"Slavic",         swatch:"#e8c9a0"},
-      {v:4, l:"Mestizo",        swatch:"#c08050"},
-      {v:5, l:"Arab",           swatch:"#b87840"},
-      {v:6, l:"South Asian",    swatch:"#9a6030"},
-      {v:7, l:"East Asian",     swatch:"#d4a870"},
-      {v:8, l:"Southeast Asian",swatch:"#b88858"},
-      {v:9, l:"Sub-Saharan",    swatch:"#5a3018"},
-      {v:10,l:"Oceanic",        swatch:"#7a4828"},
-      {v:11,l:"Free",         swatch:"#2478ff"},
-      {v:12,l:"Custom",         swatch:"#22ff00"}
+      {v:"nordic", l:"Nordic",         swatch:"#FFDABE"},
+      {v:"east european", l:"East European",         swatch:"#e8c9a0"},
+      {v:"celtic",l:"Celtic",         swatch:"#d4b89a"},
+      {v:"mediterranean", l:"Mediterranean",  swatch:"#c49a6c"},
+      {v:"mestizo", l:"Mestizo",        swatch:"#c08050"},
+      {v:"arab", l:"Arab",           swatch:"#b87840"},
+      {v:"south asian", l:"South Asian",    swatch:"#9a6030"},
+      {v:"east asian", l:"East Asian",     swatch:"#d4a870"},
+      {v:"southeast asian", l:"Southeast Asian",swatch:"#b88858"},
+      {v:"sub-saharan", l:"Sub-Saharan",    swatch:"#5a3018"},
+      {v:"oceanic",l:"Oceanic",        swatch:"#7a4828"},
+      {v:"free",l:"Free",         swatch:"#2478ff"},
+      {v:"custom",l:"Custom",         swatch:"#22ff00"},
     ];
 
     const HAIR_COLORS = [
-      {v:"1",l:"Light Brown",  hex:"#8B5E3C"},
-      {v:"2",l:"Dark Blonde",  hex:"#C8A45A"},
-      {v:"3",l:"Pure Blonde",  hex:"#F0D080"},
-      {v:"4",l:"Black",        hex:"#1a1208"},
-      {v:"5",l:"Brown",        hex:"#6B3A2A"},
-      {v:"6",l:"Dark Brown",   hex:"#3D1F10"},
-      {v:"7",l:"Grey",         hex:"#909090"},
-      {v:"8",l:"Red / Auburn", hex:"#8B2500"}
-    ];
+      {v:"1", l:"Light Brown",     hex:"#6D4A2C"},
+      {v:"2", l:"Light Blonde",    hex:"#D6C69A"},
+      {v:"3", l:"Platinum Blonde", hex:"#EDE3B4"},
+      {v:"4", l:"Black",       hex:"#121212"},
+      {v:"5", l:"Brown",    hex:"#5C3A21"},
+      {v:"6", l:"Dark Brown",      hex:"#2E1C12"},
+      {v:"7", l:"Grey",     hex:"#B0B0B0"},
+      {v:"8", l:"Red",      hex:"#B85C38"}
+  ];
+
 
     const EYE_COLORS = [
-      {v:"1",l:"Black", hex:"#0b0401"},{v:"2",l:"Dark Brown", hex:"#2e0a01"},{v:"3",l:"Brown", hex: "#6b3712"},
-      {v:"4",l:"Light Brown", hex: "#9a3902"},{v:"5",l:"Dark Blue", hex: "#0a1727"},{v:"6",l:"Blue-Grey", hex: "#263e3b"},
-      {v:"7",l:"Grey", hex: "#717c7e"},{v:"8",l:"Light Blue", hex: "#377997"},{v:"9",l:"Hazel", hex: "#ad4b0e"},
-      {v:"10",l:"Green", hex: "#588b2d"},{v:"11",l:"Violet", hex: "#896ea4"}
+      {v:"1",l:"Black", hex:"#0b0401"},
+      {v:"2",l:"Dark Brown", hex:"#2e0a01"},
+      {v:"3",l:"Brown", hex: "#6b3712"},
+      {v:"4",l:"Light Brown", hex: "#9a3902"},
+      {v:"5",l:"Dark Blue", hex: "#0a1727"},
+      {v:"6",l:"Blue-Grey", hex: "#263e3b"},
+      {v:"7",l:"Grey", hex: "#717c7e"},
+      {v:"8",l:"Light Blue", hex: "#377997"},
+      {v:"9",l:"Hazel", hex: "#ad4b0e"},
+      {v:"10",l:"Green", hex: "#588b2d"},
+      {v:"11",l:"Violet", hex: "#896ea4"}
     ];
 
     // const FORMATIONS = {
@@ -324,16 +373,45 @@
     //   "custom":  Array(26).fill("CMF")
     // };
     const FORMATIONS = {
-      "4-4-2": ["GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "LMF", "RMF", "SS", "CF", "GK", "GK", "CB", "CB", "LB", "RB", "DMF", "DMF", "CMF", "CMF", "LMF", "RMF", "SS", "CF", "CF"],
-      "4-3-3": ["GK", "CB", "CB", "LB", "RB", "CMF", "CMF", "CMF", "LWF", "RWF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "CMF", "LMF", "RMF", "LWF", "RWF", "SS", "CF"],
-      "4-2-3-1": ["GK", "CB", "CB", "LB", "RB", "DMF", "DMF", "LMF", "RMF", "AMF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "LMF", "RMF", "AMF", "LWF", "RWF", "SS", "CF"],
-      "3-5-2": ["GK", "CB", "CB", "CB", "LMF", "RMF", "CMF", "CMF", "DMF", "CF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "LMF", "RMF", "CMF", "DMF", "AMF", "LWF", "RWF", "SS", "CF"],
-      "4-5-1": ["GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "CMF", "LMF", "RMF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "LMF", "RMF", "AMF", "LWF", "RWF", "SS", "CF"],
-      "3-4-3": ["GK", "CB", "CB", "CB", "LMF", "RMF", "CMF", "CMF", "LWF", "RWF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "LMF", "RMF", "CMF", "DMF", "AMF", "LWF", "RWF", "SS", "CF"],
-      "5-3-2": ["GK", "CB", "CB", "CB", "LB", "RB", "CMF", "CMF", "DMF", "CF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "CMF", "DMF", "AMF", "LMF", "RMF", "LWF", "RWF", "SS", "CF"],
-      "4-1-4-1": ["GK", "CB", "CB", "LB", "RB", "DMF", "LMF", "RMF", "CMF", "AMF", "CF","GK", "GK", "CB", "CB", "LB", "RB", "DMF", "LMF", "RMF", "CMF", "AMF", "LWF", "RWF", "SS", "CF"],
-      "custom": Array(11).fill("CMF").concat(["GK", "GK", ...Array(13).fill("CMF")]) 
+      "4-4-2": [
+        "GK", "CB", "CB", "RB", "LB", "DMF", "CMF", "RMF", "LMF", "SS", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "DMF", "DMF", "CMF", "CMF", "RMF", "LMF", "SS", "CF", "CF"
+      ],
+      "4-3-3": [
+        "GK", "CB", "CB", "RB", "LB", "CMF", "RMF", "LMF", "RWF", "LWF", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "CMF", "RMF", "LMF", "RWF", "LWF", "SS", "CF"
+      ],
+      "4-2-3-1": [
+        "GK", "CB", "CB", "RB", "LB", "DMF", "DMF", "RMF", "LMF", "AMF", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "RMF", "LMF", "AMF", "RWF", "LWF", "SS", "CF"
+      ],
+      "4-3-1-2": [
+        "GK", "CB", "CB", "RB", "LB", "DMF", "DMF", "RMF", "LMF", "AMF", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "RMF", "LMF", "AMF", "RWF", "LWF", "SS", "CF"
+      ],
+      "3-5-2": [
+        "GK", "CB", "CB", "CB", "RMF", "LMF", "CMF", "CMF", "DMF", "CF", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "RMF", "LMF", "CMF", "DMF", "AMF", "RWF", "LWF", "SS", "CF"
+      ],
+      "4-5-1": [
+        "GK", "CB", "CB", "RB", "LB", "DMF", "CMF", "CMF", "RMF", "LMF", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "DMF", "CMF", "RMF", "LMF", "AMF", "RWF", "LWF", "SS", "CF"
+      ],
+      "3-4-3": [
+        "GK", "CB", "CB", "CB", "RMF", "LMF", "CMF", "CMF", "RWF", "LWF", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "RMF", "LMF", "CMF", "DMF", "AMF", "RWF", "LWF", "SS", "CF"
+      ],
+      "5-3-2": [
+        "GK", "CB", "CB", "CB", "RB", "LB", "CMF", "CMF", "DMF", "CF", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "CMF", "DMF", "AMF", "RMF", "LMF", "RWF", "LWF", "SS", "CF"
+      ],
+      "4-1-4-1": [
+        "GK", "CB", "CB", "RB", "LB", "DMF", "RMF", "LMF", "CMF", "AMF", "CF",
+        "GK", "GK", "CB", "CB", "LB", "RB", "DMF", "RMF", "LMF", "CMF", "AMF", "RWF", "LWF", "SS", "CF"
+      ],
+      "custom": Array(11).fill("CMF").concat(["GK", "GK", ...Array(13).fill("CMF")])
     };
+
 
     const NAMES = {
       latin:   ["Alexandro","Fabian","Lorenzo","Rodrigo","Matias","Sebastian","Valentino","Emiliano","Nicolas","Cruz","Vargas","Morales","Torres","Reyes","Herrera","Mendoza","Delgado","Rojas","Fuentes","Silva","Castro","Rios","Ortiz","Salinas","Vega","Pizarro"],
@@ -361,32 +439,32 @@
         country: "Zerphen",
         // formation: "4-3-3",
         players: [
-          {id:"111", shirt:1,  name:"Kyrax",    position:"GK",  height:202, race:1, foot:"Right"},
-          {id:"111", shirt:4,  name:"Thovar",   position:"CB",  height:190, race:3},
-          {id:"111", shirt:5,  name:"Drennis",  position:"CB",  height:188, race:1},
-          {id:"111", shirt:3,  name:"Aelric",   position:"LB",  height:178, race:2},
-          {id:"111", shirt:2,  name:"Vornak",   position:"RB",  height:180, race:3},
-          {id:"111", shirt:6,  name:"Sylmar",   position:"CMF", height:181},
-          {id:"111", shirt:8,  name:"Calder",   position:"CMF", height:177},
-          {id:"111", shirt:10, name:"Zindelia", position:"AMF", height:172, race:4, foot:"Left"},
-          {id:"111", shirt:11, name:"Ryke",     position:"LWF", height:174, race:2},
-          {id:"111", shirt:7,  name:"Orryn",    position:"RWF", height:173, race:1},
-          {id:"111", shirt:9,  name:"Aethon",   position:"CF",  height:185, race:3},
-          {id:"111", shirt:12, name:"Vex",      position:"GK",  height:196},
-          {id:"111", shirt:25, name:"Quell",    position:"GK",  height:191},
-          {id:"111", shirt:13, name:"Sorin",    position:"CB",  height:183},
-          {id:"111", shirt:14, name:"Traxis",   position:"CB",  height:186},
-          {id:"111", shirt:15, name:"Stryx",    position:"LB",  height:175},
-          {id:"111", shirt:16, name:"Dravon",   position:"RB",  height:179},
-          {id:"111", shirt:17, name:"Krios",    position:"DMF", height:180},
-          {id:"111", shirt:18, name:"Tharion",  position:"CMF", height:176},
-          {id:"111", shirt:20, name:"Malvyn",   position:"CMF", height:174},
-          {id:"111", shirt:21, name:"Nexus",    position:"LMF", height:171},
-          {id:"111", shirt:19, name:"Pyrion",   position:"RMF", height:172},
-          {id:"111", shirt:22, name:"Zelos",    position:"AMF", height:170},
-          {id:"111", shirt:23, name:"Caelum",   position:"SS",  height:178},
-          {id:"111", shirt:24, name:"Sylvar",   position:"CF",  height:182},
-          {id:"111", shirt:26, name:"Vance",    position:"CF",  height:184},
+          {id:"61089", shirt:1,  name:"Kyrax",    position:"GK",  height:202},
+          {id:"109443", shirt:4,  name:"Thovar",   position:"CB",  height:190},
+          {id:"39602", shirt:5,  name:"Drennis",  position:"CB",  height:188},
+          {id:"110650", shirt:3,  name:"Aelric",   position:"LB",  height:178},
+          {id:"118332", shirt:2,  name:"Vornak",   position:"RB",  height:180},
+          {id:"130461", shirt:6,  name:"Sylmar",   position:"CMF", height:181},
+          {id:"130462", shirt:8,  name:"Calder",   position:"CMF", height:177},
+          {id:"44667", shirt:10, name:"Zindelia", position:"AMF", height:172},
+          {id:"139908", shirt:11, name:"Ryke",     position:"LWF", height:174},
+          {id:"101813", shirt:7,  name:"Orryn",    position:"RWF", height:173},
+          {id:"102765", shirt:9,  name:"Aethon",   position:"CF",  height:185},
+          {id:"60732", shirt:12, name:"Vex",      position:"GK",  height:196},
+          {id:"141013", shirt:25, name:"Quell",    position:"GK",  height:191},
+          {id:"123196", shirt:13, name:"Sorin",    position:"CB",  height:183},
+          {id:"136846", shirt:14, name:"Traxis",   position:"CB",  height:186},
+          {id:"102105", shirt:15, name:"Stryx",    position:"LB",  height:175},
+          {id:"107688", shirt:16, name:"Dravon",   position:"RB",  height:179},
+          {id:"157694", shirt:17, name:"Krios",    position:"DMF", height:180},
+          {id:"168453", shirt:18, name:"Tharion",  position:"CMF", height:176},
+          {id:"119606", shirt:20, name:"Malvyn",   position:"CMF", height:174},
+          {id:"107076", shirt:21, name:"Nexus",    position:"LMF", height:171},
+          {id:"166393", shirt:19, name:"Pyrion",   position:"RMF", height:172},
+          {id:"136026", shirt:22, name:"Zelos",    position:"AMF", height:170},
+          {id:"109554", shirt:23, name:"Caelum",   position:"SS",  height:178},
+          {id:"117416", shirt:24, name:"Sylvar",   position:"CF",  height:182},
+          {id:"146358", shirt:26, name:"Vance",    position:"CF",  height:184},
         ]
       },
 
@@ -394,1024 +472,1026 @@
         country: "Bilsa",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"101520", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"106956", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"128299", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"165696", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"124996", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"138325", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"47522", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"101058", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"116575", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"119828", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"126426", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"155460", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"133157", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"152908", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"103613", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"161548", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"108239", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"110902", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"142261", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"127656", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"151692", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"162114", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"141008", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"165252", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"53094", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"100809", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
       "Anxious and Kevin": {
         country: "Anxious and Kevin",
-        // formation: "4-4-2",
+        formation: "4-3-3",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"113283", shirt:1,  name:"Tjorvald", position:"GK",  height:190, race:"nordic", foot:"Right"},
+          {id:"142089", shirt:2,  name:"Widforss", position:"CB",  height:182, race:"nordic", foot:"Right"},// Short FK, Long FK,
+          {id:"142147", shirt:6,  name:"Rosenblad", position:"CB",  height:185, race:"nordic", foot:"Right"}, // Captain, Penalties
+          {id:"142237", shirt:3,  name:"Juel", position:"RB",  height:177, race:"nordic", foot:"Right"},
+          {id:"112376", shirt:4,  name:"Saugstad", position:"LB",  height:181, race:"nordic", foot:"Right"},
+          {id:"104677", shirt:5,  name:"Kapanen", position:"CMF", height:182, race:"nordic", foot:"Left"},
+          {id:"142063", shirt:7,  name:"Malmsten", position:"RMF", height:177, race:"nordic", foot:"Right"},// Corners
+          {id:"134043", shirt:10, name:"Ikonen", position:"LMF", height:181, race:"nordic", foot:"Left"},
+          {id:"142177", shirt:8,  name:"Manninen", position:"RWF", height:174, race:"nordic", foot:"Left"},
+          {id:"101725", shirt:11, name:"Åkerström", position:"LWF",  height:175, race:"nordic", foot:"Right"},
+          {id:"109005", shirt:9,  name:"Granberg", position:"CF",  height:188, race:"nordic", foot:"Right"},
+          {id:"113281", shirt:12, name:"Myran", position:"GK",  height:190, race:"nordic", foot:"Right"},
+          {id:"142238", shirt:23, name:"Varvik", position:"GK",  height:191, race:"nordic", foot:"Left"},
+          {id:"127617", shirt:13, name:"Öström", position:"CB",  height:181, race:"nordic", foot:"Right"},
+          {id:"45945", shirt:14, name:"Ekbom", position:"CB",  height:184, race:"nordic", foot:"Right"},
+          {id:"60928", shirt:15, name:"Rostad", position:"LB",  height:179, race:"nordic", foot:"Right"},
+          {id:"117779", shirt:16, name:"Cedarblom", position:"RB",  height:180, race:"nordic", foot:"Right"},
+          {id:"137924", shirt:17, name:"Östlund", position:"LMF", height:178, race:"nordic", foot:"Right"},
+          {id:"138000", shirt:18, name:"Wassum", position:"LMF", height:181, race:"nordic", foot:"Right"},
+          {id:"114506", shirt:19, name:"Boen", position:"RWF", height:177, race:"nordic", foot:"Right"},
+          {id:"60884", shirt:20, name:"Tenberg", position:"RMF", height:178, race:"nordic", foot:"Left"},
+          {id:"168889", shirt:21, name:"Dokken", position:"LWF", height:169, race:"nordic", foot:"Left"},
+          {id:"102901", shirt:22, name:"Fältskog", position:"CF", height:190, race:"nordic", foot:"Right"},
+          {id:"40714", shirt:24, name:"UNNAMED", position:"CF"},
+          {id:"142159", shirt:23, name:"UNNAMED", position:"GK"},
+          {id:"139785", shirt:26, name:"UNNAMED", position:"CF"},
         ]
       },
       // "Aresetia": {
       //   country: "Aresetia",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
-      "Atsvea": {
-        country: "Atsvea",
-        // formation: "4-4-2",
-        players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
-        ]
-      },
+      // "Atsvea": {
+      //   country: "Atsvea",
+      //   // formation: "4-4-2",
+      //   players: [
+      //     {id:"xxx", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"xxx", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"xxx", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"xxx", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"xxx", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"xxx", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"xxx", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"xxx", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"xxx", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"xxx", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"xxx", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"xxx", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"xxx", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"xxx", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"xxx", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"xxx", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"xxx", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"xxx", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"xxx", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"xxx", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"xxx", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"xxx", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"xxx", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"xxx", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"xxx", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"xxx", shirt:26, name:"UNNAMED", position:"CF",  height:170},
+      //   ]
+      // },
       "Cacusia": {
         country: "Cacusia",
-        // formation: "4-4-2",
+        formation: "4-3-1-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+            {id:"47286", shirt:1,  name:"James Lance", position:"GK",  height:187, race:"celtic", age: 27},
+            {id:"141479", shirt:2,  name:"Lawrence McRaddish", position:"CB",  height:185, race:"celtic", age: 20},
+            {id:"111450", shirt:3,  name:"Ofek Greenberg", position:"CB",  height:178, race:"celtic", age: 18},
+            {id:"47785", shirt:4,  name:"Ewan Stove", position:"RB",  height:180, race:"celtic", age: 25},
+            {id:"131286", shirt:6,  name:"Oliver Stout", position:"LB",  height:179, race:"celtic", age: 21},
+            {id:"110794", shirt:7,  name:"Hector Blackmoor", position:"CMF",  height:174, race:"celtic", age: 29, captain: true},
+            {id:"132625", shirt:5,  name:"Sigmund Blair", position:"RMF",  height:187, race:"celtic", age: 29, fkShort: true, fkLong: true, corner: true},
+            {id:"151813", shirt:11,  name:"Ian Darrow", position:"LMF",  height:175, race:"celtic", age: 34},
+            {id:"151871", shirt:10, name:"Oswald Chumble", position:"AMF",  height:170, race:"celtic", age: 19},
+            {id:"157391", shirt:8, name:"Hamish Grey", position:"SS",  height:182, race:"celtic", age: 22},
+            {id:"144578", shirt:9,  name:"Malcom Dartmouth", position:"CF",  height:187, race:"celtic", age: 25, penalty: true},
+            {id:"41119", shirt:12, name:"Emmet Cohen", position:"GK",  height:188, race:"celtic", age: 21},
+            {id:"123225", shirt:25, name:"Marion Green", position:"GK",  height:170, race:"celtic", age: 20},
+            {id:"131728", shirt:13, name:"Frank Ponder", position:"CB",  height:170, race:"celtic", age: 29},
+            {id:"132933", shirt:23, name:"Ciaran Don", position:"CB",  height:170, race:"celtic", age: 22},
+            {id:"114935", shirt:18, name:"Cor Allen", position:"RB",  height:171, race:"celtic", age: 18},
+            {id:"126925", shirt:16, name:"UNNAMED", position:"RB", race:"celtic"},
+            {id:"138156", shirt:17, name:"Karol Mysteweitz", position:"CMF",  height:170, race:"celtic", age: 29},
+            {id:"117563", shirt:15, name:"Horace McCrane", position:"LMF",  height:170, race:"celtic", age: 27},
+            {id:"119835", shirt:19, name:"Aditya MacReary", position:"RMF",  height:170, race:"celtic", age: 22},
+            {id:"114186", shirt:20, name:"Rani Valentine", position:"AMF",  height:170, race:"celtic", age: 17},
+            {id:"133299", shirt:21, name:"UNNAMED", position:"CMF", race:"celtic"},
+            {id:"127544", shirt:22, name:"UNNAMED", position:"RMF", race:"celtic"},
+            {id:"47287", shirt:14, name:"Theodore Fisk", position:"SS", race:"celtic", age: 28},
+            {id:"118042", shirt:24, name:"Mika Hove", position:"CF",  height:177, race:"celtic", age: 26},
+            {id:"104680", shirt:26, name:"UNNAMED", position:"CF", race:"celtic"}
         ]
       },
       // "Cat Army": {
       //   country: "Cat Army",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
       "Clown Town City": {
         country: "Clown Town City",
-        // formation: "4-4-2",
+        formation: "5-4-1",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"113735", shirt:1,  name:"Wobbles", position:"GK",  height:186},
+          {id:"130415", shirt:2,  name:"Tootles", position:"CB",  height:188},
+          {id:"35893", shirt:6,  name:"Razzle", position:"CB",  height:187},
+          {id:"129292", shirt:4,  name:"Noodles", position:"CB",  height:182},
+          {id:"129281", shirt:3,  name:"Yippy", position:"RB",  height:180},
+          {id:"129287", shirt:5,  name:"Chuckles", position:"LB",  height:179},
+          {id:"129289", shirt:8,  name:"Lollipop", position:"DMF",  height:184, fkShort:true, fkLong:true},
+          {id:"129277", shirt:7, name:"Giggles", position:"CMF",  height:177},
+          {id:"129284", shirt:11, name:"Doodles", position:"RMF",  height:160},
+          {id:"128240", shirt:10, name:"Boingo", position:"LMF",  height:178, corner:true},
+          {id:"115100", shirt:9,  name:"Honkers", position:"CF",  height:175, captain:true, penalty:true},
+          {id:"35888", shirt:12, name:"Wiggly", position:"GK",  height:190},
+          {id:"110320", shirt:25, name:"Squeaky", position:"GK",  height:180},
+          {id:"130417", shirt:13, name:"Mirth", position:"CB",  height:195},
+          {id:"129278", shirt:14, name:"Poppet", position:"CB",  height:187},
+          {id:"143822", shirt:15, name:"Uppsy", position:"LB",  height:180},
+          {id:"129283", shirt:16, name:"Icky", position:"RB",  height:180},
+          {id:"129290", shirt:17, name:"Zany", position:"CMF",  height:179},
+          {id:"145043", shirt:18, name:"Koooky", position:"CMF",  height:179},
+          {id:"136779", shirt:19, name:"Quirk", position:"LMF",  height:178},
+          {id:"129279", shirt:20, name:"Fizzles", position:"RMF",  height:168},
+          {id:"40015", shirt:21, name:"Jingles", position:"RB",  height:173},
+          {id:"136778", shirt:22, name:"Oopsy", position:"CF",  height:183},
+          {id:"129291", shirt:23, name:"Binky", position:"DMF",  height:178},
+          {id:"129286", shirt:24, name:"Snickers", position:"LMF",  height:174},
+          {id:"129285", shirt:26, name:"Gizmo", position:"CF",  height:188},
         ]
       },
       "Columbiqash": {
         country: "Columbiqash",
-        // formation: "4-4-2",
+        formation: "4-3-1-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"129105", shirt:1,  name:"Gimlin", position:"GK",  height:191},
+          {id:"129113", shirt:2,  name:"Mattson", position:"CB",  height:190},
+          {id:"148156", shirt:6,  name:"Benson", position:"CB",  height:183},
+          {id:"91304", shirt:4,  name:"Huxley", position:"RB",  height:179},
+          {id:"122231", shirt:3,  name:"Hilton", position:"LB",  height:177},
+          {id:"129110", shirt:5,  name:"Lompe", position:"DMF",  height:182},
+          {id:"129109", shirt:8,  name:"Glazier", position:"RMF",  height:176},
+          {id:"143780", shirt:7, name:"Yukon", position:"LMF",  height:173},
+          {id:"140603", shirt:10, name:"Long", position:"AMF",  height:175},
+          {id:"129122", shirt:11, name:"Greenwood", position:"SS",  height:175},
+          {id:"122071", shirt:9,  name:"Kingsley", position:"CF",  height:184},
+          {id:"60202", shirt:12, name:"Bennett", position:"GK",  height:191},
+          {id:"129115", shirt:25, name:"Barton", position:"GK",  height:191},
+          {id:"129112", shirt:13, name:"Lindon", position:"CB",  height:187},
+          {id:"146329", shirt:14, name:"Mayor", position:"CB",  height:184},
+          {id:"136833", shirt:15, name:"Madison", position:"LB",  height:176},
+          {id:"154095", shirt:16, name:"Burton", position:"RB",  height:170},
+          {id:"129119", shirt:17, name:"Parrish", position:"CMF",  height:180},
+          {id:"101902", shirt:18, name:"Weaver", position:"LMF",  height:182},
+          {id:"134771", shirt:19, name:"Karanian", position:"RMF",  height:173},
+          {id:"143785", shirt:20, name:"Sands", position:"AMF",  height:181},
+          {id:"154094", shirt:21, name:"Harmon", position:"SS",  height:184},
+          {id:"129107", shirt:22, name:"Simpkin", position:"CF",  height:188},
+          {id:"151554", shirt:23, name:"Elliot", position:"DMF",  height:190},
+          {id:"161188", shirt:24, name:"Lambert", position:"CMF",  height:181},
+          {id:"113855", shirt:26, name:"Bentley", position:"CF",  height:186},
         ]
       },
       // "Daarwyrth": {
       //   country: "Daarwyrth",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
       "Einswenn": {
         country: "Einswenn",
-        // formation: "4-4-2",
+        formation: "4-2-3-1",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
-        ]
+          {id:"127161", shirt:1,  name:"Iver Hans", position:"GK",  height:188, age:31, hair:5, race:"nordic", eyes:8},
+          {id:"120429", shirt:2,  name:"Arman Sonra", position:"CB",  height:187, age:27, hair:5, race:"nordic", eyes:8},
+          {id:"9042", shirt:3,  name:"Osef Kerst", position:"CB",  height:183, age:25, hair:3, race:"nordic", eyes:8},
+          {id:"103551", shirt:4,  name:"Sverre Kattell", position:"RB",  height:183, age:23, hair:6, race:"nordic", eyes:8},
+          {id:"120424", shirt:6,  name:"Adrian Lund", position:"LB",  height:174, age:34, hair:1, race:"nordic", eyes:8},
+          {id:"118704", shirt:7,  name:"Isak Moje", position:"DMF",  height:177, age:33, hair:1, race:"nordic", eyes:8},
+          {id:"112433", shirt:5,  name:"Rein Kask", position:"CMF",  height:185, age:26, hair:3, race:"nordic", eyes:8},
+          {id:"133747", shirt:10, name:"Henri Paulsen", position:"RMF",  height:185, age:32, hair:5, race:"nordic"},
+          {id:"124663", shirt:12, name:"Javi Teitur", position:"LMF",  height:171, age:29, hair:8, eyes:8, penalty: true, fkShort: true, captain: true, race:"nordic"},
+          {id:"117376", shirt:11, name:"Magg Solheim", position:"AMF",  height:175, age:29, hair:1, eyes:8, fkLong: true, corner: true, race:"nordic"},
+          {id:"146052", shirt:9,  name:"Olle Gro", position:"CF",  height:186, age:34, hair:8, race:"nordic", eyes:8},
+          {id:"142828", shirt:13, name:"Olevir Egliss", position:"GK",  height:190, age:23, hair:1, race:"nordic", eyes:8},
+          {id:"59547", shirt:23, name:"René Daniau", position:"GK",  height:188, age:25, hair:5, race:"nordic", eyes:8},
+          {id:"120439", shirt:19, name:"Mik Gunnarson", position:"CB",  height:184, age:31, hair:1, race:"nordic", eyes:6},
+          {id:"118242", shirt:15, name:"Auden Bosnak", position:"CB",  height:190, age:27, hair:3, race:"nordic", eyes:8},
+          {id:"124026", shirt:8, name:"Mikkel Erisken", position:"LB",  height:171, age:24, hair:2, race:"nordic", eyes:8},
+          {id:"137996", shirt:21, name:"Den Braaten", position:"RB",  height:174, age:29, hair:5, race:"nordic", eyes:8},
+          {id:"40871", shirt:18, name:"Lukas Filip", position:"CMF",  height:179, age:31, hair:8, race:"nordic", eyes:8},
+          {id:"120428", shirt:16, name:"Teo Marcos", position:"LMF",  height:181, age:26, hair:5, race:"mediterranean", eyes:3},
+          {id:"164926", shirt:20, name:"Ergor Hakon", position:"RMF",  height:184, age:35, hair:1, race:"nordic", eyes:8},
+          {id:"120411", shirt:22, name:"Horattio Frey", position:"AMF",  height:175, age:29, hair:1, race:"nordic", eyes:8},
+          {id:"133260", shirt:17, name:"Roman Jogi", position:"SS",  height:172, age:24, hair:5, race:"nordic", eyes:5},
+          {id:"141221", shirt:14, name:"Jo De Santis", position:"CF",  height:181, age:26, hair:5, race:"mediterranean", eyes:2},
+          {id:"113707", shirt:24, name:"UNNAMED", position:"DMF", race:"nordic"},
+          {id:"122035", shirt:25, name:"UNNAMED", position:"LMF", race:"nordic"},
+          {id:"105057", shirt:26, name:"UNNAMED", position:"CF", race:"nordic"}
+      ]
+
+
       },
       "Freistaat Ostpreussen": {
         country: "Freistaat Ostpreussen",
-        // formation: "4-4-2",
+        formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"129196", shirt:1,  name:"Carl Achenbach", position:"GK", height:192, race:"east european", hair:4, eyes:8},
+          {id:"129204", shirt:4,  name:"Hilmar Falkner", position:"CB",  height:182, race:"east european", hair:1, eyes:8, captain:true},
+          {id:"32312", shirt:5,  name:"Max Oppen", position:"CB",  height:180, race:"east european", hair:2, eyes:8},
+          {id:"118166", shirt:2,  name:"Torben Weerder", position:"RB",  height:182, race:"east european", hair:3, eyes:8},
+          {id:"144788", shirt:3,  name:"Moritz Hegel", position:"LB",  height:179, race:"east european", hair:3, eyes:8},
+          {id:"130290", shirt:6,  name:"Till Friederich", position:"DMF",  height:176, race:"east european", hair:1, eyes:8},
+          {id:"136857", shirt:10,  name:"Jeremia Salzmann", position:"CMF",  height:179, race:"east european", hair:8, eyes:8},
+          {id:"119102", shirt:11, name:"Emil Willich", position:"RMF",  height:177, race:"east european", hair:2, eyes:8},
+          {id:"39756", shirt:8, name:"Stanisław Mazur", position:"LMF",  height:181, race:"east european", hair:4, corner:true, eyes:8},
+          {id:"130291", shirt:7, name:"Hannes Koerner", position:"SS",  height:181, race:"east european", hair:3, eyes:8, fkLong:true, fkShort:true},
+          {id:"60514", shirt:9,  name:"Adam Lahnen", position:"CF",  height:182, race:"east european", hair:1, eyes:8, penalty:true},
+          {id:"130287", shirt:12, name:"Anton Steinmann", position:"GK",  height:190, race:"east european", hair:3, eyes:8},
+          {id:"140814", shirt:23, name:"Miro Westarp", position:"GK",  height:193, race:"east european", hair:3, eyes:8},
+          {id:"52405", shirt:14, name:"Jakob Willich", position:"CB",  height:186, race:"east european", hair:1, eyes:10},
+          {id:"143799", shirt:15, name:"Wladimir Kehrer", position:"CB",  height:185, race:"east european", hair:1, eyes:8},
+          {id:"129195", shirt:15, name:"Leonard Renk", position:"LB",  height:174, race:"east european", hair:8, eyes:8},
+          {id:"146364", shirt:13, name:"Niels Schmidt", position:"RB",  height:177, race:"east european", hair:2, eyes:10},
+          {id:"136860", shirt:16, name:"Benjamin Hirsch", position:"CMF",  height:172, race:"east european", hair:5, eyes:8},
+          {id:"39963", shirt:17, name:"Hauke Wollner", position:"DMF",  height:182, race:"east european", hair:3, eyes:8},
+          {id:"146365", shirt:18, name:"Vytas Palinois", position:"DMF",  height:177, race:"east european", hair:4, eyes:2},
+          {id:"39964", shirt:19, name:"Philipp Rosen", position:"LMF",  height:175, race:"east european", hair:1, eyes:8},
+          {id:"46703", shirt:20, name:"Wieland Frisch", position:"RMF",  height:172, race:"east european", hair:1, eyes:8},
+          {id:"136858", shirt:21, name:"Ernst Dönhoff", position:"CF",  height:186, race:"east european", hair:3, eyes:8},
+          {id:"130289", shirt:23, name:"UNNAMED", position:"CMF", race:"east european"},
+          {id:"129207", shirt:24, name:"UNNAMED", position:"SS", race:"east european"},
+          {id:"129200", shirt:26, name:"UNNAMED", position:"CF", race:"east european"},
         ]
       },
       "Furilisca": {
         country: "Furilisca",
-        // formation: "4-4-2",
+        formation: "4-3-3",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"114721", shirt:1,  name:"Þór Jónsson", position:"GK",  height:192, race:"nordic"},
+          {id:"116258", shirt:2,  name:"Frederik Gunnlaugson", position:"CB",  height:186, race:"nordic"},
+          {id:"128468", shirt:3,  name:"Katla Eyjólfsdóttir", position:"CB",  height:186, race:"nordic"},
+          {id:"114509", shirt:4,  name:"Sólborg Atladóttir", position:"RB",  height:170, race:"nordic"},
+          {id:"47162", shirt:5,  name:"Þröstur Kristmundsson", position:"LB",  height:183, race:"nordic"},
+          {id:"132335", shirt:7,  name:"Emilía Pálsdóttir", position:"RMF",  height:174, race:"nordic"},
+          {id:"117463", shirt:6,  name:"Alexander Ness", position:"CMF",  height:178, race:"nordic"},
+          {id:"125386", shirt:8, name:"Krista Héðinsdóttir", position:"LMF",  height:177, race:"nordic"},
+          {id:"167657", shirt:11, name:"Karla Reynisdóttir", position:"RWF",  height:168, race:"nordic"},
+          {id:"61442", shirt:10, name:"Dýrfinna Sigfúsdóttir", position:"LWF",  height:184, race:"nordic"},
+          {id:"146307", shirt:9,  name:"Mikkel Andersen", position:"CF",  height:181, race:"nordic"},
+          {id:"158754", shirt:12, name:"Bergvin Helgason", position:"GK",  height:195, race:"nordic"},
+          {id:"37422", shirt:13, name:"Björg Árnadóttir", position:"GK",  height:191, race:"nordic"},
+          {id:"113692", shirt:14, name:"Sæmundur Daðason", position:"RB",  height:178, race:"nordic"},
+          {id:"91034", shirt:15, name:"Bjarki Andrésson", position:"LB",  height:183, race:"nordic"},
+          {id:"141053", shirt:16, name:"Andras Sólmundsson", position:"CMF",  height:179, race:"nordic"},
+          {id:"118145", shirt:17, name:"Margeir Gottskálksson", position:"RMF",  height:173, race:"nordic"},
+          {id:"106764", shirt:18, name:"Þorkell Baldvinsson", position:"LMF",  height:179, race:"nordic"},
+          {id:"109137", shirt:19, name:"Steinar Höskuldsson", position:"AMF",  height:178, race:"nordic"},
+          {id:"120354", shirt:20, name:"Alexandra Tryggvadóttir", position:"LWF",  height:174, race:"nordic"},
+          {id:"46539", shirt:21, name:"Søren Enoksen", position:"RWF",  height:172, race:"nordic"},
+          {id:"37638", shirt:22, name:"Halldór Fylkisson", position:"SS",  height:186, race:"nordic"},
+          {id:"125390", shirt:23, name:"Þórhildur Bergsdóttir", position:"CF",  height:186, race:"nordic"},
+          {id:"130321", shirt:24, name:"UNNAMED", position:"SS", race:"nordic"},
+          {id:"123392", shirt:25, name:"UNNAMED", position:"CF", race:"nordic"},
+          {id:"103611", shirt:26, name:"UNNAMED", position:"CF", race:"nordic"},
         ]
       },
       "Jutsa": {
         country: "Jutsa",
-        // formation: "4-4-2",
+        formation: "4-3-1-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"143909", shirt:1,  name:"Upfuik", position:"GK",  height:170},
+          {id:"102580", shirt:2,  name:"Meizaic", position:"CB",  height:170},
+          {id:"91", shirt:3,  name:"Ŋoipei", position:"CB",  height:170},
+          {id:"130326", shirt:4,  name:"Xeinfe", position:"RB",  height:170},
+          {id:"231", shirt:5,  name:"Vuijtak", position:"LB",  height:170},
+          {id:"118276", shirt:6,  name:"Ñuizvei", position:"DMF",  height:170},
+          {id:"250", shirt:8,  name:"Ocsdei", position:"RMF",  height:170},
+          {id:"284", shirt:11, name:"Yujnep", position:"LMF",  height:170},
+          {id:"321", shirt:10, name:"Mak Tepyet", position:"AMF",  height:170},
+          {id:"161151", shirt:7, name:"Aïhuij", position:"SS",  height:170},
+          {id:"167795", shirt:9,  name:"Kazñeisei", position:"CF",  height:170},
+          {id:"143186", shirt:12, name:"Lupein", position:"GK",  height:170},
+          {id:"116102", shirt:14, name:"Hailei", position:"GK",  height:170},
+          {id:"105015", shirt:15, name:"Zuksai", position:"CB",  height:170},
+          {id:"102626", shirt:16, name:"Dakyui", position:"CB",  height:170},
+          {id:"107329", shirt:20, name:"Uxedpep", position:"LB",  height:170},
+          {id:"146445", shirt:18, name:"Weinxait", position:"RB",  height:170},
+          {id:"116101", shirt:22, name:"Sagkui", position:"CMF",  height:170},
+          {id:"130328", shirt:21, name:"Kanzoi", position:"LMF",  height:170},
+          {id:"143915", shirt:23, name:"Faiyoi", position:"RMF",  height:170},
+          {id:"143913", shirt:17, name:"Wan Tepyet", position:"AMF",  height:170},
+          {id:"142944", shirt:13, name:"Ruinlei", position:"SS",  height:170},
+          {id:"117852", shirt:19, name:"Meilain", position:"CF",  height:170},
+          {id:"161153", shirt:24, name:"UNNAMED", position:"CMF"},
+          {id:"387", shirt:25, name:"UNNAMED", position:"AMF"},
+          {id:"112395", shirt:26, name:"UNNAMED", position:"CF"},
         ]
       },
       "Lumiose": {
         country: "Lumiose",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"116482", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"108279", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"104485", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"114662", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"115098", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"133678", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"165287", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"147076", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"107686", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"140738", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"116970", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"140565", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"170976", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"107949", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"128478", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"103686", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"114835", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"118171", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"160615", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"108096", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"132684", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"114235", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"38858", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"122716", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"119811", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"114624", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
-      "Mozolephies": {
-        country: "Mozolephies",
-        // formation: "4-4-2",
-        players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
-        ]
-      },
+      // "Mozolephies": {
+      //   country: "Mozolephies",
+      //   // formation: "4-4-2",
+      //   players: [
+      //     {id:"103494", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"136520", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"129258", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"129274", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"144745", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"129272", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"129266", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"129271", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"129268", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"137923", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"129257", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"129262", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"117901", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"137900", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"144747", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"129264", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"90292", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"129265", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"125963", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"130305", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"130303", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"143804", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"136823", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"54935", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"42907", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"139747", shirt:26, name:"UNNAMED", position:"CF",  height:170},
+      //   ]
+      // },
       "Nardin": {
         country: "Nardin",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"154096", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"58633", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"169917", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"133108", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"110530", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"118471", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"139935", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"140317", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"144820", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"142121", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"130357", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"116357", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"117766", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"144436", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"102526", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"168887", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"169916", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"142155", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"142208", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"17675", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"123130", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"43023", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"156976", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"116355", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"34813", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"143408", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
-      "New Libertalia Kingdom": {
-        country: "New Libertalia Kingdom",
-        // formation: "4-4-2",
-        players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
-        ]
-      },
+      // "New Libertalia Kingdom": {
+      //   country: "New Libertalia Kingdom",
+      //   // formation: "4-4-2",
+      //   players: [
+      //     {id:"111304", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"109596", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"133752", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"130280", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"130279", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"109277", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"103992", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"43230", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"154097", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"110012", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"105939", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"129306", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"144730", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111498", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"129296", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"144731", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"144732", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"129295", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"144738", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"104233", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"129305", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"104828", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"132507", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"148138", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"129294", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"104029", shirt:26, name:"UNNAMED", position:"CF",  height:170},
+      //   ]
+      // },
       "Nordustra": {
         country: "Nordustra",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"126752", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"106754", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"63777", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"138601", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"143400", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"115152", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"157492", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"147142", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"132966", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"117886", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"46647", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"147458", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"119133", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"59801", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"157314", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"113695", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"143402", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"44379", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"133470", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"127516", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"119700", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"159585", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"151507", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"114457", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"125370", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"147603", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
       // "Orcuo": {
       //   country: "Orcuo",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
-      "Ottterland": {
-        country: "Ottterland",
+      "Otterland": {
+        country: "Otterland",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"132503", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"122111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"121125", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"136895", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"103976", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"104176", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"129101", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"129097", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"104193", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"37629", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"129099", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"103943", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"122193", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"136894", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"111246", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"130218", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"130219", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"136769", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"136767", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"136768", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"130221", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"136770", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"143786", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"129100", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"118434", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"103973", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
       // "RKD": {
       //   country: "RKD",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
       "Roless": {
         country: "Roless",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"60447", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"139898", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"47529", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"126689", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"116655", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"114975", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"104752", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"111252", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"45089", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"110784", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"117644", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"119782", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"101334", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"128078", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"157339", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"114638", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"128338", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"47051", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"108984", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"147955", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"60446", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"110626", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"129369", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"110718", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"108069", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"115254", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
       "Ruinenlust": {
         country: "Ruinenlust",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"130264", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"143792", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"129135", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"119514", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"102815", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"57381", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"130265", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"39609", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"129128", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"145018", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"113931", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"59143", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"118547", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"61170", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"170668", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"40822", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"59796", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"129127", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"130267", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"39960", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"145022", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"143795", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"59142", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"143794", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"143797", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"143796", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
       // "Schachland": {
       //   country: "Schachland",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
       "Sehir": {
         country: "Sehir",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"129175", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"161198", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"148159", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"116717", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"115337", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"129165", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"143811", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"146471", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"129162", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"161197", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"129172", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"130406", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"124810", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"129170", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"130408", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"129173", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"136871", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"130407", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"144966", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"146473", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"136425", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"144968", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"130411", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"129168", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"136870", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"144967", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
-      // "Stralla": {
-      //   country: "Stralla",
-      //   // formation: "4-4-2",
-      //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
-      //   ]
-      // },
+      "Stralla": {
+        country: "Stralla",
+        // formation: "4-4-2",
+        players: [
+          {id:"143778", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"136907", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"36052", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"145014", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"129188", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"40027", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"129191", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"145013", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"129184", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"36061", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"146510", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"129186", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"129189", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"146509", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"129190", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"36066", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"36065", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"130286", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"129183", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"40026", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"52958", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"129182", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"129181", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"154093", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"130285", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"54262", shirt:26, name:"UNNAMED", position:"CF",  height:170},
+        ]
+      },
       "The Realizer": {
         country: "The Realizer",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"113596", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"157718", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"121991", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"133750", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"142080", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"108453", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"125039", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"132192", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"90351", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"139727", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"113271", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"43135", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"144437", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"61720", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"34098", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"113265", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"141911", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"118494", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"100412", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"38439", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"444", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"107479", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"90237", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"164835", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"110303", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"104749", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
       // "Tylvana": {
       //   country: "Tylvana",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
       "United Malay Federation": {
         country: "United Malay Federation",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"114022", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"126908", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"109547", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"130524", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"157256", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"117999", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"146823", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"147647", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"114907", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"43166", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"108525", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"608", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"118411", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"142336", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"113839", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"59767", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"131731", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"161536", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"147615", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"132109", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"121421", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"151778", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"147616", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"132624", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"159282", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"133107", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
       "Verdant Haven": {
         country: "Verdant Haven",
         // formation: "4-4-2",
         players: [
-          {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-          {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-          {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-          {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-          {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-          {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-          {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-          {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-          {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-          {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-          {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-          {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-          {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-          {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-          {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-          {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-          {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-          {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-          {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-          {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-          {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-          {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-          {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-          {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-          {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-          {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+          {id:"136668", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+          {id:"111130", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"142128", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+          {id:"114105", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+          {id:"127217", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+          {id:"44840", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+          {id:"40875", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+          {id:"159401", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"132155", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"111986", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+          {id:"139830", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+          {id:"127069", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+          {id:"153932", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+          {id:"118274", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+          {id:"108662", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+          {id:"132156", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+          {id:"133594", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+          {id:"118316", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+          {id:"122012", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"114845", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+          {id:"122728", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+          {id:"117932", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+          {id:"132216", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+          {id:"132157", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+          {id:"46879", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+          {id:"103142", shirt:26, name:"UNNAMED", position:"CF",  height:170},
         ]
       },
       // "Washeyye": {
       //   country: "Washeyye",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
       // "Yucatán": {
       //   country: "Yucatán",
       //   // formation: "4-4-2",
       //   players: [
-      //     {id:"111", shirt:1,  name:"Bjorn Lindqvist",   position:"GK",  height:196, race:1, hair:"3"},
-      //     {id:"111", shirt:4,  name:"Erik Voss",          position:"CB",  height:191, race:1, hair:"2"},
-      //     {id:"111", shirt:5,  name:"Lars Berg",          position:"CB",  height:189, race:1, hair:"4"},
-      //     {id:"111", shirt:3,  name:"Gunnar Holm",        position:"LB",  height:181, race:1, foot:"Left"},
-      //     {id:"111", shirt:2,  name:"Ragnar Strand",      position:"RB",  height:182, race:1},
-      //     {id:"111", shirt:6,  name:"Sven Lund",          position:"DMF", height:183, race:1},
-      //     {id:"111", shirt:8,  name:"Ivar Dahl",          position:"CMF", height:179, race:1},
-      //     {id:"111", shirt:11, name:"Leif Nilsson",       position:"LMF", height:176, race:1, foot:"Left"},
-      //     {id:"111", shirt:7,  name:"Ulf Johansson",      position:"RMF", height:177, race:1},
-      //     {id:"111", shirt:10, name:"Sigurd Karlsson",    position:"SS",  height:180, race:1},
-      //     {id:"111", shirt:9,  name:"Olav Eriksson",      position:"CF",  height:188, race:1},
-      //     {id:"111", shirt:12, name:"Halvard Pettersson", position:"GK",  height:194, race:1},
-      //     {id:"111", shirt:25, name:"Tore Gustafsson",    position:"GK",  height:190, race:1},
-      //     {id:"111", shirt:13, name:"Vidar Andersson",    position:"CB",  height:187, race:1},
-      //     {id:"111", shirt:14, name:"Knut Larsson",       position:"CB",  height:185, race:1},
-      //     {id:"111", shirt:15, name:"Asmund Olsson",      position:"LB",  height:178, race:1},
-      //     {id:"111", shirt:16, name:"Frode Nilsson",      position:"RB",  height:180, race:1},
-      //     {id:"111", shirt:17, name:"Helge Berg",         position:"DMF", height:181, race:1},
-      //     {id:"111", shirt:18, name:"Torkel Holm",        position:"CMF", height:177, race:1},
-      //     {id:"111", shirt:20, name:"Steinar Lund",       position:"CMF", height:175, race:1},
-      //     {id:"111", shirt:21, name:"Einar Strand",       position:"LMF", height:174, race:1},
-      //     {id:"111", shirt:19, name:"Magnor Dahl",        position:"RMF", height:173, race:1},
-      //     {id:"111", shirt:22, name:"Osvald Voss",        position:"AMF", height:172, race:1},
-      //     {id:"111", shirt:23, name:"Rolf Karlsson",      position:"SS",  height:177, race:1},
-      //     {id:"111", shirt:24, name:"Trond Eriksson",     position:"CF",  height:183, race:1},
-      //     {id:"111", shirt:26, name:"Bjarne Johansson",   position:"CF",  height:185, race:1},
+      //     {id:"111", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:10, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:12, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:23, name:"UNNAMED", position:"GK",  height:170},
+      //     {id:"111", shirt:13, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:14, name:"UNNAMED", position:"CB",  height:170},
+      //     {id:"111", shirt:15, name:"UNNAMED", position:"LB",  height:170},
+      //     {id:"111", shirt:16, name:"UNNAMED", position:"RB",  height:170},
+      //     {id:"111", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
+      //     {id:"111", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
+      //     {id:"111", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
+      //     {id:"111", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
+      //     {id:"111", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
+      //     {id:"111", shirt:24, name:"UNNAMED", position:"SS",  height:170},
+      //     {id:"111", shirt:25, name:"UNNAMED", position:"CF",  height:170},
+      //     {id:"111", shirt:26, name:"UNNAMED", position:"CF",  height:170},
       //   ]
       // },
 
@@ -1447,7 +1527,8 @@
         hair:"", eyes:"",
         foot:"random",
         isKey:false,
-        abilities:{}, skills:{},
+        // fkShort:false, fkLong:false, corner:false, penalty:false,
+        // abilities:{}, skills:{},
         expanded:false
       }));
     }
@@ -1481,7 +1562,7 @@
           <span class="race-name">${r.l}</span>
           <div class="race-slider">
             <input type="range" min="0" max="10" step="1" value="${w}"
-              oninput="setRaceW(${r.v},+this.value)">
+              oninput="setRaceW('${r.v}',+this.value)">
           </div>
           <span class="race-val" id="rw-${r.v}">${w}</span>`;
         container.appendChild(row);
@@ -1493,20 +1574,31 @@
       document.getElementById(`rw-${id}`).textContent = val;
     }
     function equalizeRaces(){ RACES.forEach(r=>raceWeights[r.v]=5); buildRaceRows(); }
+    function editRaces(val){ 
+      RACES.forEach(
+        r=>raceWeights[r.v]=Math.min(10, Math.max(0, raceWeights[r.v]+val))
+      ); 
+      buildRaceRows(); 
+    }
+    function randomizeRaces(){ RACES.forEach(r=>raceWeights[r.v]=Math.floor(Math.random()*11)); buildRaceRows(); }
     function clearRaces(){ RACES.forEach(r=>raceWeights[r.v]=0); buildRaceRows(); }
     function applyRaceDistribution(){
       const raceAmount = RACES.length;
       const totalWeight = Object.values(raceWeights).reduce((a, b) => a + b, 0);
 
       if (totalWeight === 0) {
-        players.forEach(p => p.race = Math.floor(Math.random() * raceAmount) + 1); // Select random race
+        // players.forEach(p => p.race = Math.floor(Math.random() * raceAmount) + 1); // Select random race
+        players.forEach(p => {
+            const randomIndex = Math.floor(Math.random() * RACES.length);
+            p.race = RACES[randomIndex].v;
+        });
       } else {
         const pool = [];
         const activeRaces = RACES.filter(r => raceWeights[r.v] > 0);
 
         for (let i = 0; i < 26; i++) {
           let random = Math.random() * totalWeight;
-          let selectedRace = 11;
+          let selectedRace = "free";
 
           for (let r of activeRaces) {
             if (random < raceWeights[r.v]) {
@@ -1531,7 +1623,8 @@
 
     function pickRaceFromWeights(){
       const pool = [];
-      RACES.forEach(r=>{ for(let i=0;i<(raceWeights[r.v]||0);i++) pool.push(r.v); });
+      RACES.forEach(r=>{ for(let i=0;i<(raceWeights[r.v]||0);i++) 
+        pool.push(r.v); });
       if(!pool.length) return "";  // fully random
       return pool[Math.floor(Math.random()*pool.length)];
     }
@@ -1539,14 +1632,14 @@
     // FORMATION
     function applyFormation(){
       const f = v("cfg-formation");
-      const pos = FORMATIONS[f]||FORMATIONS["4-3-3"];
+      const pos = FORMATIONS[f]||FORMATIONS["4-4-2"];
       players.forEach((p,i)=>{
         p.position = pos[i]||"CMF";
         p.playstyle = "";
       });
       // Lock GKs
       players[0].position  = "GK";
-      players[12].position = "GK";
+      players[11].position = "GK";
       players[12].position = "GK";
 
       renderTable();
@@ -1559,7 +1652,7 @@
     function renderFormationBar(){
       const counts={};
       players.slice(0,11).forEach(p=>counts[p.position]=(counts[p.position]||0)+1);
-      let html=`<span style="color:var(--text3);font-size:.7rem;margin-right:.2rem">${v("cfg-formation")} ·</span>`;
+      let html=`<span style="color:var(--text3);font-size:.7rem;margin-right:.2rem">${v("cfg-formation")}</span>`;
       POSITIONS.forEach(pos=>{
         if(counts[pos]){
           const g=POS_GROUP[pos]||"mid";
@@ -1576,7 +1669,7 @@
       ids.forEach((sid,ri)=>{
         const sel = document.getElementById(sid);
         const cur = specialRoles[keys[ri]];
-        sel.innerHTML = `<option value="">— not set —</option>`;
+        sel.innerHTML = '<option value="">— not set —</option>';
         players.slice(0,11).forEach((p,i)=>{
           const lbl = (p.name.trim()||`#${p.shirt}`) + ` (${p.position})`;
           sel.innerHTML += `<option value="${i}"${cur===i?" selected":""}>${lbl}</option>`;
@@ -1593,6 +1686,46 @@
       updateExport();
     }
 
+    function updateSelect(id, value) {
+      const select = document.getElementById(id);
+      if (value === -1 || value === "") {
+        select.selectedIndex = 0;
+        return;
+      }
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value == value) {
+          select.selectedIndex = i;
+          return;
+        }
+      }
+      select.selectedIndex = -1;
+    }
+
+    function randomizeSpecial(){
+      specialRoles = {
+        fkShort: Math.floor(Math.random() * 11) - 1,
+        fkLong: Math.floor(Math.random() * 11) - 1,
+        corner: Math.floor(Math.random() * 11) - 1,
+        penalty: Math.floor(Math.random() * 11) - 1
+      };
+      
+      updateSelect("sp-fk-short", specialRoles.fkShort);
+      updateSelect("sp-fk-long", specialRoles.fkLong);
+      updateSelect("sp-corner", specialRoles.corner);
+      updateSelect("sp-penalty", specialRoles.penalty);
+      
+      updateExport();
+    }
+    
+    function clearSpecial(){
+      specialRoles = {fkShort:-1, fkLong:-1, corner:-1, penalty:-1};
+      updateSelect("sp-fk-short", "");
+      updateSelect("sp-fk-long", "");
+      updateSelect("sp-corner", "");
+      updateSelect("sp-penalty", "");
+      updateExport();
+    }
+
     function updatePositionClass(selectElement) {
       const position = selectElement.value;
       const group = POS_GROUP[position];
@@ -1606,6 +1739,8 @@
     }
     //  RENDER TABLE
     function renderTable(){
+      // Cancel any pending swap when re-rendering
+      swapPendingIdx = null;
       const tbody = document.getElementById("squad-body");
       tbody.innerHTML = "";
 
@@ -1628,7 +1763,9 @@
         if(isKey) tr.classList.add("key-row");
 
         const raceOpts = `<option value="">Random</option>` +
-          RACES.map(r=>`<option value="${r.v}"${p.race==r.v?" selected":""}>${r.l}</option>`).join("");
+          RACES.map(r => 
+              `<option value="${r.v}"${p.race === r.v ? " selected" : ""}>${r.l}</option>`
+          ).join("");
 
         const posLocked = i===0||i===11||i===12;
         // const posOpts = POSITIONS.map(pos=>
@@ -1650,13 +1787,20 @@
           <option value="Left"${p.foot==="Left"?" selected":""}>Left</option>`;
 
         const positionClass = p.position ? POS_CHIP[POS_GROUP[p.position]] : "";
+        // Swap button tooltip
+        const swapTitle = isGkSlot(i)
+          ? "Swap with another GK"
+          : "Swap with another outfield player";
+
         tr.innerHTML = `
-          <td><input type="number" class="c-shirt" style="width:48px;text-align:center;font-family:var(--mono)"
-            min="1" max="99" value="${p.shirt}" oninput="sf(${i},'shirt',+this.value)"></td>
-            <td>
-              <input type="text" class="c-name" placeholder="Name…" value="${esc(p.name)}"
-              oninput="sf(${i},'name',this.value)">
-            </td>
+          <td>
+            <input type="number" class="c-shirt" style="width:48px;text-align:center;font-family:var(--mono)"
+            min="1" max="99" value="${p.shirt}" oninput="sf(${i},'shirt',+this.value)">
+          </td>
+          <td>
+            <input type="text" class="c-name" placeholder="Name…" value="${esc(p.name)}"
+            oninput="sf(${i},'name',this.value)">
+          </td>
           <td>
             <!-- <select class="c-pos" onchange="sf(${i},'position',this.value)"${posLocked?" disabled":""}>
               ${posOpts}
@@ -1686,10 +1830,12 @@
             <button class="icon-btn key${isKey?" on":""}" onclick="toggleKey(${i})" title="Key player">Key</button>
           </td>
           <td class="c-cap">
-            <button class="icon-btn cap${isCap?" on":""}" onclick="toggleCaptain(${i})" title="Captain">C</button>
+            <button class="icon-btn cap${isCap?" on":""}" onclick="toggleCaptain(${i})" title="Captain" ${i > 10 ? "disabled" : ""}>C</button>
           </td>
           <td>
             <button class="dtoggle${p.expanded?" open":""}" onclick="toggleExpand(${i})">···</button>
+            <button class="swap-btn" onclick="initiateSwap(${i})" title="${swapTitle}">⇄</button>
+            <button class="btn btn-ghost btn-xs" onclick="clearPlayer(${i})">X</button>
           </td>`;
 
         tbody.appendChild(tr);
@@ -1720,7 +1866,7 @@
       let html = `<div class="dgrid">`;
 
       // Basic
-      html += `<div class="dsec">Basic</div>
+      html += `<!-- <div class="dsec">Basic</div> -->
         <div class="dfield"><div class="dlabel">Age</div>
           <input class="dinput" type="number" min="15" max="50" placeholder="auto" value="${p.age}"
             oninput="sf(${i},'age',this.value)"></div>
@@ -1749,13 +1895,13 @@
       const eyeOptsAdv = `<option value="">Random</option>` +
         EYE_COLORS.map(e => `<option value="${e.v}"${p.eyes === e.v ? " selected" : ""}>${e.l}</option>`).join("");
       const curEye = EYE_COLORS.find(e => e.v === p.eyes);
-      const eyeHex = curEye ? curEye.hex : "#22ff00"; // Usar un color por defecto si no hay selección
+      const eyeHex = curEye ? curEye.hex : "#22ff00";
       html += `<div class="dfield"><div class="dlabel">Eye Color</div>
-        <div class="hair-picker-wrap"> <!-- Reutilizamos la misma clase CSS -->
+        <div class="hair-picker-wrap">
           <span class="hair-swatch" id="es-${i}" style="background:${eyeHex}"></span>
           <select onchange="setEye(${i}, this.value, this)">${eyeOptsAdv}</select>
         </div></div>`;
-
+      
       // Abilities
       // ABILITY_GROUPS.forEach(g=>{
       //   html += `<div class="dsec">${g.lbl}</div>`;
@@ -1801,6 +1947,17 @@
       updateExport();
     }
 
+    function globalIncreaseAge(inc) {
+      players.forEach(p => {
+        let age = parseInt(p.age);
+        if (isNaN(age)) age = 15; 
+
+        p.age = Math.min(50, Math.max(15, age + inc));
+      });
+      renderTable();
+      updateExport();
+    }
+
     function setHair(i, val, sel){
       players[i].hair = val;
       const swatch = document.getElementById(`hs-${i}`);
@@ -1815,7 +1972,8 @@
       sf(i, 'eyes', value);
       const curEye = EYE_COLORS.find(e => e.v == value);
       const eyeHex = curEye ? curEye.hex : "#22ff00";
-      document.getElementById(`es-${i}`).style.background = eyeHex;
+      const swatch = document.getElementById(`es-${i}`);
+      if(swatch) swatch.style.background = eyeHex;
     }
 
 
@@ -1850,12 +2008,29 @@
       updateExport();
     }
 
+    function setCaptain(i){
+      captainIdx = i;
+      renderTable();
+      updateExport();
+    }
+
     function toggleExpand(i){
       players[i].expanded = !players[i].expanded;
       const dp = document.getElementById("dp"+i);
       const btn = document.querySelector(`#r${i} .dtoggle`);
       if(dp){ dp.classList.toggle("open", players[i].expanded); if(players[i].expanded) dp.innerHTML=buildDetail(i); }
       if(btn) btn.classList.toggle("open", players[i].expanded);
+    }
+
+    function toggleExpandAll(){
+      const allExpanded = players.every((p,i)=>p.expanded);
+      players.forEach((p,i)=>{
+        if(allExpanded){
+          if(p.expanded) toggleExpand(i);
+        } else {
+          if(!p.expanded) toggleExpand(i);
+        }
+      });
     }
 
     function setAb(i,k,val){
@@ -1870,6 +2045,124 @@
       updateExport();
     }
 
+    // SWAP FEATURE
+    // GK slots are FIXED at indices 0, 11, 12
+    const GK_SLOTS = new Set([0, 11, 12]);
+    let swapPendingIdx = null;
+
+    function isGkSlot(i) { return GK_SLOTS.has(i); }
+
+    function initiateSwap(i) {
+      // Clicking the same player again → cancel
+      if (swapPendingIdx === i) {
+        swapPendingIdx = null;
+        clearSwapVisuals();
+        toast("Swap cancelled");
+        return;
+      }
+
+      // No pending swap yet → select this player
+      if (swapPendingIdx === null) {
+        swapPendingIdx = i;
+        applySwapVisuals(i);
+        const name = players[i].name.trim() || `#${players[i].shirt}`;
+        toast(`⇄ ${name} selected — pick who to swap with`);
+        return;
+      }
+
+      // Already a pending swap — attempt it
+      const a = swapPendingIdx;
+      const b = i;
+
+      // Compatibility check: GK slots only swap with GK slots
+      if (isGkSlot(a) !== isGkSlot(b)) {
+        toast("Goalkeepers can only swap with other Goalkeepers!");
+        return;
+      }
+
+      // Execute the swap
+      executeSwap(a, b);
+    }
+
+    function executeSwap(a, b) {
+      // Swap player objects
+      const tmp = players[a];
+      players[a] = players[b];
+      players[b] = tmp;
+
+      // Re-lock GK positions (slots 0, 11, 12 must stay GK)
+      GK_SLOTS.forEach(idx => players[idx].position = "GK");
+
+      // Swap captain
+      if (captainIdx === a)      players[a].captain = false;
+      else if (captainIdx === b)     players[b].captain = false;
+
+      // Swap special roles
+      ["fkShort", "fkLong", "corner", "penalty"].forEach(key => {
+        if (specialRoles[key] === a)      specialRoles[key] = b;
+        else if (specialRoles[key] === b) specialRoles[key] = a;
+      });
+
+      swapPendingIdx = null;
+      clearSwapVisuals();
+      renderTable();
+      renderFormationBar();
+      refreshSpecialSelects();
+      updateAvgHeights();
+      updateExport();
+
+      const nameA = players[b].name.trim() || `#${players[b].shirt}`;
+      const nameB = players[a].name.trim() || `#${players[a].shirt}`;
+      toast(`${nameA} ⇄ ${nameB} swapped!`);
+    }
+
+    function applySwapVisuals(selectedIdx) {
+      clearSwapVisuals();
+      // Mark the selected row
+      const srcRow = document.getElementById(`r${selectedIdx}`);
+      if (srcRow) srcRow.classList.add("swap-source-row");
+
+      // Mark all swap buttons as pending / compatible / incompatible
+      players.forEach((_, j) => {
+        const btn = document.querySelector(`#r${j} .swap-btn`);
+        if (!btn) return;
+        if (j === selectedIdx) {
+          btn.classList.add("pending");
+          btn.textContent = "✕";
+        } else {
+          const compatible = isGkSlot(selectedIdx) === isGkSlot(j);
+          btn.classList.add(compatible ? "compatible" : "incompatible");
+        }
+      });
+    }
+
+    function clearSwapVisuals() {
+      document.querySelectorAll(".swap-btn").forEach(b => {
+        b.classList.remove("pending", "compatible", "incompatible");
+        b.textContent = "⇄";
+      });
+      document.querySelectorAll(".swap-source-row").forEach(r => {
+        r.classList.remove("swap-source-row");
+      });
+    }
+
+    function clearPlayer(i){
+      players[i] = {
+        shirt: players[i].shirt,
+        name:"",
+        position: "GK",
+        playstyle:"",
+        race:"",
+        height:"", weight:"", age:"",
+        hair:"", eyes:"",
+        foot:"random",
+        isKey:false,
+        // abilities:{}, skills:{},
+        expanded:players[i].expanded
+      };
+      renderTable();
+      updateExport();
+    }
     //  HEIGHTS
     function updateAvgHeights(){
       const hOf = arr => arr.map(p=>parseInt(p.height)||0).filter(h=>h>0);
@@ -1888,8 +2181,8 @@
       players.forEach(p=>{
         if(!p.name.trim()) p.name = rndPick(bank);
         if(!p.height) p.height = autoH(p.position);
-        if(!p.weight) p.weight = autoW(p.height||178);
-        if(!p.age) p.age = rnd(18,33);
+        // if(!p.weight) p.weight = autoW(p.height||178);
+        // if(!p.age) p.age = rnd(18,33);
         if(!p.foot||p.foot==="random") p.foot = Math.random()<.15?"Left":"Right";
         // race from weights distribution
         if(!p.race) p.race = pickRaceFromWeights();
@@ -1907,11 +2200,11 @@
     }
 
     function clearAll(){
-      console.log("AAAAAAAAAAAASDFASDFTESTESTESTESTESTSET")
       // if(!confirm("Reset all player data?")) return;
       // Players
       players = mkPlayers();
       captainIdx = -1;
+      swapPendingIdx = null;
       specialRoles = {fkShort:-1,fkLong:-1,corner:-1,penalty:-1};
       // Races
       RACES.forEach(r=>raceWeights[r.v]=0);
@@ -1926,6 +2219,7 @@
       renderTable();
       renderFormationBar();
       updateAvgHeights();
+      clearSpecial();
       updateExport();
       toast("Reset");
     }
@@ -1947,17 +2241,17 @@
         if(p.weight)        parts.push(`"Weight": ${p.weight}`);
         if(p.age)           parts.push(`"Age": ${p.age}`);
         if(p.foot&&p.foot!=="random") parts.push(`"Foot": "${p.foot}"`);
-        if(p.race)          parts.push(`"Race": ${p.race}`);
+        if(p.race)          parts.push(`"Race": "${p.race}"`);
         if(p.playstyle)     parts.push(`"PlayingStyle": ${p.playstyle}`);
         if(p.hair)          parts.push(`"HairColour": ${p.hair}`);
         if(p.eyes)          parts.push(`"IrisColour": ${p.eyes}`);
 
-        Object.entries(p.abilities).forEach(([k,val])=>{
-          if(val!==undefined&&val!=="") parts.push(`"${k}": ${val}`);
-        });
-        Object.entries(p.skills).forEach(([k,on])=>{
-          if(on===true) parts.push(`"${k}": "True"`);
-        });
+        // Object.entries(p.abilities).forEach(([k,val])=>{
+        //   if(val!==undefined&&val!=="") parts.push(`"${k}": ${val}`);
+        // });
+        // Object.entries(p.skills).forEach(([k,on])=>{
+        //   if(on===true) parts.push(`"${k}": "True"`);
+        // });
 
         const tags=[];
         if(p.shirt)                 tags.push(`shirt: ${p.shirt}`);
@@ -1972,9 +2266,10 @@
         return `    {${comment}\n        ${parts.join(",\n        ")}\n    }`;
       });
 
-      let out = "";
-      out += `team = [\n${lines.join(",\n")}\n]`;
-      return out;
+      // let out = "";
+      // out += `team = [\n${lines.join(",\n")}\n]`;
+      // return out;
+      return `team = [\n${lines.join(",\n")}\n]`;
     }
 
     function updateExport(){
@@ -2015,13 +2310,37 @@
     function toggleEl(id){const el=document.getElementById(id);el.style.display=el.style.display==="none"?"":"none"}
     function shuffleArr(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
 
-    function autoH(pos){
-      const r={GK:[183,200],CB:[177,196],LB:[170,184],RB:[170,184],
-        DMF:[173,188],CMF:[170,185],LMF:[168,180],RMF:[168,180],
-        AMF:[168,182],LWF:[165,180],RWF:[165,180],SS:[172,185],CF:[172,196]};
-      const [lo,hi]=r[pos]||[170,185]; return rnd(lo,hi);
+    // function autoH(pos){
+    //   const r={GK:[183,200],CB:[177,196],LB:[170,184],RB:[170,184],
+    //     DMF:[173,188],CMF:[170,185],LMF:[168,180],RMF:[168,180],
+    //     AMF:[168,182],LWF:[165,180],RWF:[165,180],SS:[172,185],CF:[172,196]};
+    //   const [lo,hi]=r[pos]||[170,185]; return rnd(lo,hi);
+    // }
+    function autoH(pos) {
+      const r = {
+        GK:  {mean:188, std:5}, CB:  {mean:186, std:4},
+        LB:  {mean:180, std:4}, RB:  {mean:180, std:4},
+        DMF: {mean:180, std:4}, CMF: {mean:180, std:4},
+        LMF: {mean:179, std:4}, RMF: {mean:179, std:4},
+        AMF: {mean:179, std:4}, LWF: {mean:177, std:4},
+        RWF: {mean:177, std:4}, SS:  {mean:180, std:4},
+        CF:  {mean:183, std:4}
+      };
+      const {mean, std} = r[pos] || {mean:180, std:4};
+      let h;
+      do { h = Math.round(mean + std * randn()); } while (h < 160 || h > 210);
+      return h;
     }
-    function autoW(h){return Math.round((20+Math.random()*5)*(h/100)*(h/100))}
+    // function autoW(h){return Math.round((20+Math.random()*5)*(h/100)*(h/100))}
+    function autoW(h) {
+      const imc = 20.5 + Math.random() * 3;
+      return Math.max(30, Math.min(129, Math.round(imc * (h/100) * (h/100))));
+    }
+    function randn() {
+      let u, v;
+      do { u = Math.random(); v = Math.random(); } while (u === 0);
+      return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    }
 
     // START
     init();
