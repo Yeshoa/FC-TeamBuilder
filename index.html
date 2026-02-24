@@ -331,21 +331,21 @@
       {v:"southeast asian", l:"Southeast Asian",swatch:"#b88858"},
       {v:"sub-saharan", l:"Sub-Saharan",    swatch:"#5a3018"},
       {v:"oceanic",l:"Oceanic",        swatch:"#7a4828"},
+      {v:"bilsan",l:"Bilsan",        swatch:"#FFA500"},
       {v:"free",l:"Free",         swatch:"#2478ff"},
       {v:"custom",l:"Custom",         swatch:"#22ff00"},
     ];
 
     const HAIR_COLORS = [
-      {v:"1", l:"Light Brown",     hex:"#6D4A2C"},
-      {v:"2", l:"Light Blonde",    hex:"#D6C69A"},
-      {v:"3", l:"Platinum Blonde", hex:"#EDE3B4"},
-      {v:"4", l:"Black",       hex:"#121212"},
-      {v:"5", l:"Brown",    hex:"#5C3A21"},
-      {v:"6", l:"Dark Brown",      hex:"#2E1C12"},
-      {v:"7", l:"Grey",     hex:"#B0B0B0"},
-      {v:"8", l:"Red",      hex:"#B85C38"}
-  ];
-
+        {v:"1", l:"Light Brown",     hex:"#6D4A2C"},
+        {v:"2", l:"Light Blonde",    hex:"#D6C69A"},
+        {v:"3", l:"Platinum Blonde", hex:"#EDE3B4"},
+        {v:"4", l:"Black",       hex:"#121212"},
+        {v:"5", l:"Brown",    hex:"#5C3A21"},
+        {v:"6", l:"Dark Brown",      hex:"#2E1C12"},
+        {v:"7", l:"Grey",     hex:"#B0B0B0"},
+        {v:"8", l:"Red",      hex:"#B85C38"}
+    ];
 
     const EYE_COLORS = [
       {v:"1",l:"Black", hex:"#0b0401"},
@@ -361,17 +361,6 @@
       {v:"11",l:"Violet", hex: "#896ea4"}
     ];
 
-    // const FORMATIONS = {
-    //   "4-3-3":   ["GK","CB","CB","LB","RB","CMF","CMF","CMF","LWF","RWF","CF","GK","GK","CB","CB","LB","RB","CMF","CMF","CMF","CMF","CMF","LWF","RWF","CF","CF"],
-    //   "4-4-2":   ["GK","CB","CB","LB","RB","CMF","CMF","LMF","RMF","CF","CF","CB","CB","LB","RB","CMF","CMF","LMF","AMF","SS","GK","GK","CB","LB","DMF","CF"],
-    //   "4-2-3-1": ["GK","CB","CB","LB","RB","DMF","DMF","LMF","RMF","AMF","CF","CB","CB","LB","RB","CMF","CMF","LWF","RWF","SS","GK","GK","CB","LB","DMF","CF"],
-    //   "3-5-2":   ["GK","CB","CB","CB","LMF","RMF","CMF","CMF","DMF","CF","CF","CB","CB","LB","RB","CMF","DMF","AMF","LWF","RWF","GK","GK","CB","LB","SS","CF"],
-    //   "4-5-1":   ["GK","CB","CB","LB","RB","DMF","CMF","CMF","LMF","RMF","CF","CB","CB","LB","RB","DMF","DMF","AMF","LWF","RWF","GK","GK","CB","LB","CMF","SS"],
-    //   "3-4-3":   ["GK","CB","CB","CB","LMF","RMF","CMF","CMF","LWF","RWF","CF","CB","CB","LB","RB","CMF","DMF","AMF","SS","SS","GK","GK","CB","LB","DMF","CF"],
-    //   "5-3-2":   ["GK","CB","CB","CB","LB","RB","CMF","CMF","DMF","CF","CF","CB","CB","LB","RB","CMF","CMF","AMF","LWF","RWF","GK","GK","CB","DMF","SS","CF"],
-    //   "4-1-4-1": ["GK","CB","CB","LB","RB","DMF","LMF","RMF","CMF","AMF","CF","CB","CB","LB","RB","DMF","DMF","LMF","RMF","SS","GK","GK","CB","LB","CMF","CF"],
-    //   "custom":  Array(26).fill("CMF")
-    // };
     const FORMATIONS = {
       "4-4-2": [
         "GK", "CB", "CB", "RB", "LB", "DMF", "CMF", "RMF", "LMF", "SS", "CF",
@@ -411,7 +400,6 @@
       ],
       "custom": Array(11).fill("CMF").concat(["GK", "GK", ...Array(13).fill("CMF")])
     };
-
 
     const NAMES = {
       latin:   ["Alexandro","Fabian","Lorenzo","Rodrigo","Matias","Sebastian","Valentino","Emiliano","Nicolas","Cruz","Vargas","Morales","Torres","Reyes","Herrera","Mendoza","Delgado","Rojas","Fuentes","Silva","Castro","Rios","Ortiz","Salinas","Vega","Pizarro"],
@@ -470,34 +458,34 @@
 
       "Bilsa": {
         country: "Bilsa",
-        // formation: "4-4-2",
+        formation: "4-2-3-1",
         players: [
-          {id:"101520", shirt:1,  name:"UNNAMED", position:"GK",  height:170},
-          {id:"106956", shirt:4,  name:"UNNAMED", position:"CB",  height:170},
-          {id:"128299", shirt:6,  name:"UNNAMED", position:"CB",  height:170},
-          {id:"165696", shirt:4,  name:"UNNAMED", position:"RB",  height:170},
-          {id:"124996", shirt:3,  name:"UNNAMED", position:"LB",  height:170},
-          {id:"138325", shirt:5,  name:"UNNAMED", position:"DMF",  height:170},
-          {id:"47522", shirt:8,  name:"UNNAMED", position:"CMF",  height:170},
-          {id:"101058", shirt:7, name:"UNNAMED", position:"RMF",  height:170},
-          {id:"116575", shirt:11, name:"UNNAMED", position:"LMF",  height:170},
-          {id:"119828", shirt:10, name:"UNNAMED", position:"SS",  height:170},
-          {id:"126426", shirt:9,  name:"UNNAMED", position:"CF",  height:170},
-          {id:"155460", shirt:12, name:"UNNAMED", position:"GK",  height:170},
-          {id:"133157", shirt:23, name:"UNNAMED", position:"GK",  height:170},
-          {id:"152908", shirt:13, name:"UNNAMED", position:"CB",  height:170},
-          {id:"103613", shirt:14, name:"UNNAMED", position:"CB",  height:170},
-          {id:"161548", shirt:15, name:"UNNAMED", position:"LB",  height:170},
-          {id:"108239", shirt:16, name:"UNNAMED", position:"RB",  height:170},
-          {id:"110902", shirt:17, name:"UNNAMED", position:"DMF",  height:170},
-          {id:"142261", shirt:18, name:"UNNAMED", position:"CMF",  height:170},
-          {id:"127656", shirt:19, name:"UNNAMED", position:"CMF",  height:170},
-          {id:"151692", shirt:20, name:"UNNAMED", position:"RMF",  height:170},
-          {id:"162114", shirt:21, name:"UNNAMED", position:"LMF",  height:170},
-          {id:"141008", shirt:22, name:"UNNAMED", position:"AMF",  height:170},
-          {id:"165252", shirt:24, name:"UNNAMED", position:"SS",  height:170},
-          {id:"53094", shirt:25, name:"UNNAMED", position:"CF",  height:170},
-          {id:"100809", shirt:26, name:"UNNAMED", position:"CF",  height:170},
+          {id:"101520", shirt:1,  name:"Jadar", position:"GK",  height:195, age:28, race:"bilsan"},
+          {id:"106956", shirt:6,  name:"Asenus", position:"CB",  height:189, age:21, race:"bilsan"},
+          {id:"128299", shirt:4,  name:"Ritsa", position:"CB",  height:183, age:30, race:"bilsan"},
+          {id:"165696", shirt:14,  name:"Pjzan", position:"RB",  height:172, age:23, race:"bilsan"},
+          {id:"124996", shirt:3,  name:"Vlajsaj", position:"LB",  height:177, age:25, race:"bilsan"},
+          {id:"138325", shirt:17,  name:"Rakaj", position:"DMF",  height:179, age:23, race:"bilsan"},
+          {id:"47522", shirt:22,  name:"Njazet", position:"CMF",  height:175, age:26, race:"bilsan", fkShort:true, fkLong:true, corner:true},
+          {id:"101058", shirt:8, name:"Arhanv", position:"LMF",  height:169, age:28, race:"bilsan"},
+          {id:"116575", shirt:7, name:"Ervaan", position:"RMF",  height:182, age:31, race:"bilsan"},
+          {id:"119828", shirt:10, name:"Hajan", position:"AMF",  height:175, age:27, race:"bilsan"},
+          {id:"126426", shirt:9,  name:"Muniv", position:"CF",  height:189, age:28, race:"bilsan", captain:true, penalty:true},
+          {id:"155460", shirt:12, name:"Kjell", position:"GK",  height:182, age:29, race:"bilsan"},
+          {id:"133157", shirt:23, name:"Lerja", position:"GK",  height:191, age:22, race:"bilsan"},
+          {id:"152908", shirt:2, name:"Skaraj", position:"CB",  height:188, age:20, race:"bilsan"},
+          {id:"103613", shirt:15, name:"Zazeonj", position:"CB",  height:181, age:26, race:"bilsan"},
+          {id:"161548", shirt:13, name:"Sevil", position:"RB",  height:165, age:23, race:"bilsan"},
+          {id:"108239", shirt:16, name:"Cereon", position:"LB",  height:174, age:30, race:"bilsan"},
+          {id:"110902", shirt:20, name:"Zehaj", position:"DMF",  height:193, age:19, race:"bilsan"},
+          {id:"142261", shirt:18, name:"Djedan", position:"LMF",  height:180, age:18, race:"bilsan"},
+          {id:"127656", shirt:5, name:"Azerotj", position:"RMF",  height:179, age:20, race:"bilsan"},
+          {id:"151692", shirt:19, name:"Tjenelsim", position:"AMF",  height:174, age:20, race:"bilsan"},
+          {id:"162114", shirt:25, name:"Menseaj", position:"RMF",  height:174, age:17, race:"bilsan"},
+          {id:"141008", shirt:26, name:"Zarzahaj", position:"AMF",  height:176, age:17, race:"bilsan"},
+          {id:"165252", shirt:24, name:"Saraj", position:"SS",  height:178, age:18, race:"bilsan"},
+          {id:"53094", shirt:21, name:"Zjoakavj", position:"CF",  height:190, age:26, race:"bilsan"},
+          {id:"100809", shirt:11, name:"Nuvljabawnj", position:"CF",  height:178, age:21, race:"bilsan"},
         ]
       },
       "Anxious and Kevin": {
@@ -1580,8 +1568,8 @@
       ); 
       buildRaceRows(); 
     }
-    function randomizeRaces(){ RACES.forEach(r=>raceWeights[r.v]=Math.floor(Math.random()*11)); buildRaceRows(); }
-    function clearRaces(){ RACES.forEach(r=>raceWeights[r.v]=0); buildRaceRows(); }
+    function randomizeRaces(){ RACES.forEach(r=>raceWeights[r.v]=Math.floor(Math.random()*11)); buildRaceRows(); toast("Race weights randomized"); }
+    function clearRaces(){ RACES.forEach(r=>raceWeights[r.v]=0); buildRaceRows(); toast("Race weights cleared"); }
     function applyRaceDistribution(){
       const raceAmount = RACES.length;
       const totalWeight = Object.values(raceWeights).reduce((a, b) => a + b, 0);
@@ -1956,6 +1944,7 @@
       });
       renderTable();
       updateExport();
+      toast(`All player's ages ${inc > 0 ? "increased" : "decreased"} by ${Math.abs(inc)}`);
     }
 
     function setHair(i, val, sel){
@@ -2197,6 +2186,7 @@
       const bank = NAMES[v("cfg-lang")]||NAMES.random;
       players.forEach(p=>p.name=rndPick(bank));
       renderTable(); refreshSpecialSelects(); updateExport();
+      toast("Auto-filled all names");
     }
 
     function clearAll(){

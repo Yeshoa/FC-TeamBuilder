@@ -4,6 +4,7 @@
   font-weight: normal;
 }
 :root {
+  font-size:18px;
   --bg:#080c0a; --bg2:#0c1209; --card:#0f1712; --card2:#141f16;
   --border:#1c2b1e; --border2:#253428;
   --green:#00e676; --gdim:rgba(0,230,118,.11); --gmid:rgba(0,230,118,.2);
@@ -12,7 +13,7 @@
   --mono:'Share Tech Mono',monospace; --head:'Barlow Condensed',sans-serif; --body:'Barlow',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;font-size:18px}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:repeating-linear-gradient(0deg,transparent,transparent 48px,rgba(0,230,118,.012) 48px,rgba(0,230,118,.012) 49px),
   repeating-linear-gradient(90deg,transparent,transparent 96px,rgba(0,230,118,.007) 96px,rgba(0,230,118,.007) 97px)}
@@ -32,7 +33,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(8,12,10,.97);backdrop-f
 .header-right{display:flex;gap:.5rem;align-items:center;flex-shrink:0}
 
 /* MAIN */
-main{position:relative;z-index:1;max-width:1440px;margin:0 auto;}
+main{position:relative;z-index:1;max-width:1440px;width:95%;margin:0 auto;}
 
 /* SEC HEADER */
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.4rem}
