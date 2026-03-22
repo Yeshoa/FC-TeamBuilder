@@ -84,7 +84,7 @@
               <option value="arabic">Arabic</option>
               <option value="asian">East Asian</option>
               <option value="african">African</option>
-              <option value="north europe">north europe</option>
+              <option value="nordic">Nordic</option>
               <option value="fantasy">Fantasy / Sci-fi</option>
             </select>
           </div>
@@ -197,14 +197,14 @@
               <div class="sp-label">Short Free Kick</div>
               <select class="sp-sel" id="sp-fk-short" onchange="updateSpecial()"><option value="-1">— not set —</option></select>
             </div>
-            <div class="sp-item">
+            <!-- <div class="sp-item">
               <div class="sp-label">Long Free Kick</div>
               <select class="sp-sel" id="sp-fk-long" onchange="updateSpecial()"><option value="-1">— not set —</option></select>
             </div>
             <div class="sp-item">
               <div class="sp-label">Corner Kicks</div>
               <select class="sp-sel" id="sp-corner" onchange="updateSpecial()"><option value="-1">— not set —</option></select>
-            </div>
+            </div> -->
             <div class="sp-item">
               <div class="sp-label">Penalty Kicks</div>
               <select class="sp-sel" id="sp-penalty" onchange="updateSpecial()"><option value="-1">— not set —</option></select>
@@ -306,8 +306,8 @@
         if(src.id !== undefined) {p.id = src.id;}
         if(src.captain !== undefined) setCaptain(i);
         if(src.fkShort !== undefined) specialRoles.fkShort = i;
-        if(src.fkLong  !== undefined) specialRoles.fkLong  = i;
-        if(src.corner  !== undefined) specialRoles.corner  = i;
+        // if(src.fkLong  !== undefined) specialRoles.fkLong  = i;
+        // if(src.corner  !== undefined) specialRoles.corner  = i;
         if(src.penalty !== undefined) specialRoles.penalty = i;
       });
       players[0].position="GK"; players[11].position="GK"; players[12].position="GK";
@@ -455,7 +455,7 @@
       arabic:  ["Karim","Omar","Youssef","Ahmed","Hassan","Tariq","Ziad","Faisal","Nasser","Bilal","Al-Rashid","Ibrahim","Mansour","El-Amin","Khalil","Hamdan","Qasim","Bashir","Nabil","Samir","Adnan","Jamal","Farouk","Riad","Zubair","Hadi"],
       asian:   ["Ji-woo","Min-jun","Hyun","Seo-jun","Taro","Kenji","Yuki","Daiki","Ryu","Chen","Wei","Xiao","Zhang","Tanaka","Yamamoto","Nakamura","Ito","Kobayashi","Park","Kim","Choi","Lee","Ahn","Yoon","Shin","Oh"],
       african: ["Kwame","Kofi","Yaw","Kojo","Nana","Mensah","Asante","Boateng","Osei","Amoah","Diallo","Traore","Coulibaly","Camara","Keita","Toure","Dembele","Cisse","Diop","Gueye","Sane","Sarr","Mane","Ndoye","Balde","Sylla"],
-      northeurope:  ["Erik","Lars","Bjorn","Sven","Gunnar","Ragnar","Leif","Sigurd","Ivar","Ulf","Lindqvist","Johansson","Andersson","Eriksson","Karlsson","Larsson","Nilsson","Pettersson","Gustafsson","Olsson","Berg","Holm","Strand","Lund","Voss","Dahl"],
+      nordic:  ["Erik","Lars","Bjorn","Sven","Gunnar","Ragnar","Leif","Sigurd","Ivar","Ulf","Lindqvist","Johansson","Andersson","Eriksson","Karlsson","Larsson","Nilsson","Pettersson","Gustafsson","Olsson","Berg","Holm","Strand","Lund","Voss","Dahl"],
       fantasy: ["Zyrax","Kaelos","Theron","Voryn","Aeldric","Nexus","Calder","Dravon","Sorin","Aethon","Vex","Krios","Tharion","Zelos","Malvyn","Draven","Ryke","Caelum","Zand","Orryn","Sylvar","Traxis","Quell","Pyrion","Stryx","Vance"]
     };
     NAMES.random = Object.values(NAMES).flat();
@@ -1612,8 +1612,10 @@
 
     //  SET PIECES
     function refreshSpecialSelects(){
-      const ids  = ["sp-fk-short","sp-fk-long","sp-corner","sp-penalty"];
-      const keys = ["fkShort","fkLong","corner","penalty"];
+      // const ids  = ["sp-fk-short","sp-fk-long","sp-corner","sp-penalty"];
+      const ids  = ["sp-fk-short","sp-penalty"];
+      // const keys = ["fkShort","fkLong","corner","penalty"];
+      const keys = ["fkShort","penalty"];
       ids.forEach((sid,ri)=>{
         const sel = document.getElementById(sid);
         const cur = specialRoles[keys[ri]];
@@ -1628,8 +1630,8 @@
     function updateSpecial(){
       const parse = id => { const n=parseInt(v(id)); return isNaN(n)?-1:n; };
       specialRoles.fkShort = parse("sp-fk-short");
-      specialRoles.fkLong  = parse("sp-fk-long");
-      specialRoles.corner  = parse("sp-corner");
+      // specialRoles.fkLong  = parse("sp-fk-long");
+      // specialRoles.corner  = parse("sp-corner");
       specialRoles.penalty = parse("sp-penalty");
       updateExport();
     }
@@ -1652,14 +1654,14 @@
     function randomizeSpecial(){
       specialRoles = {
         fkShort: Math.floor(Math.random() * 11) - 1,
-        fkLong: Math.floor(Math.random() * 11) - 1,
-        corner: Math.floor(Math.random() * 11) - 1,
+        // fkLong: Math.floor(Math.random() * 11) - 1,
+        // corner: Math.floor(Math.random() * 11) - 1,
         penalty: Math.floor(Math.random() * 11) - 1
       };
       
       updateSelect("sp-fk-short", specialRoles.fkShort);
-      updateSelect("sp-fk-long", specialRoles.fkLong);
-      updateSelect("sp-corner", specialRoles.corner);
+      // updateSelect("sp-fk-long", specialRoles.fkLong);
+      // updateSelect("sp-corner", specialRoles.corner);
       updateSelect("sp-penalty", specialRoles.penalty);
       
       updateExport();
@@ -1668,8 +1670,8 @@
     function clearSpecial(){
       specialRoles = {fkShort:-1, fkLong:-1, corner:-1, penalty:-1};
       updateSelect("sp-fk-short", "");
-      updateSelect("sp-fk-long", "");
-      updateSelect("sp-corner", "");
+      // updateSelect("sp-fk-long", "");
+      // updateSelect("sp-corner", "");
       updateSelect("sp-penalty", "");
       updateExport();
     }
@@ -2073,7 +2075,11 @@
       else if (captainIdx === b)     players[b].captain = false;
 
       // Swap special roles
-      ["fkShort", "fkLong", "corner", "penalty"].forEach(key => {
+      // ["fkShort", "fkLong", "corner", "penalty"].forEach(key => {
+      //   if (specialRoles[key] === a)      specialRoles[key] = b;
+      //   else if (specialRoles[key] === b) specialRoles[key] = a;
+      // });
+      ["fkShort", "penalty"].forEach(key => {
         if (specialRoles[key] === a)      specialRoles[key] = b;
         else if (specialRoles[key] === b) specialRoles[key] = a;
       });
@@ -2250,8 +2256,8 @@
         if(p.isKey)                 tags.push("KEY PLAYER");
         if(captainIdx===i)          tags.push("Captain");
         if(specialRoles.fkShort===i) tags.push("Short FK");
-        if(specialRoles.fkLong===i)  tags.push("Long FK");
-        if(specialRoles.corner===i)  tags.push("Corners");
+        // if(specialRoles.fkLong===i)  tags.push("Long FK");
+        // if(specialRoles.corner===i)  tags.push("Corners");
         if(specialRoles.penalty===i) tags.push("Penalty");
 
         const comment = tags.length ? `  # ${tags.join("  |  ")}` : "";
