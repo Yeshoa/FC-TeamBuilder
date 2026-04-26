@@ -357,8 +357,8 @@ function renderGroups(){
       else if(sel.first&&sel.second){pc='out';pl='✕';}
       rows+=`<div class="team-row ${pc==='first'||pc==='second'?pc:''}" onclick="handleGroupClick('${g}',${id})">
         <div class="pos-badge ${pc}">${pl}</div>
-        ${flagImg(t)}<span class="team-name">${t.name}</span>
-        <span class="team-rating">${ratingSpan(t.rating)}</span></div>`;
+        ${flagImg(t)}<span class="team-name">${t.name}</span><!--
+        <span class="team-rating">${ratingSpan(t.rating)}</span>--></div>`;
     });
     const done=sel.first&&sel.second;
     const card=document.createElement('div');card.className='group-card';
@@ -411,8 +411,8 @@ function makeMatchCard(matchId,label,homeId,awayId){
     const isW=winner===t.id,isL=winner&&!isW;
     return`<div class="match-team ${isW?'winner':''} ${isL?'loser':''}" onclick="handleMatchClick('${matchId}',${t.id})">
       <div class="match-win-dot"></div>${flagImg(t,'match-flag')}
-      <span class="match-name">${t.name}</span>
-      <span class="match-rating">${ratingSpan(t.rating)}</span></div>`;
+      <span class="match-name">${t.name}</span><!--
+      <span class="match-rating">${ratingSpan(t.rating)}</span>--></div>`;
   }
   const status=winner&&homeT&&awayT?'confirmed':homeT&&awayT?'pick winner':'';
   return`<div class="match-card">
