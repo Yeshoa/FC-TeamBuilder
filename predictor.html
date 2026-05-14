@@ -274,6 +274,17 @@ const GROUPS_DATA = {
   H: [7, 33, 26, 13],
 };
 
+const DEFAULT_SELECTIONS = {
+  A: { first: 2,  second: 14 }, // Cacusia 1st, Nardin 2nd
+  B: { first: 1,  second: 12 }, // Roless 1st, Nordustra 2nd
+  C: { first: 4,  second: 17 }, // Einswenn 1st, Valentian Kittens 2nd
+  D: { first: 6,  second: 18 }, // Lumiose 1st, Chan Island 2nd
+  E: { first: 11, second: 8  }, // Anxious and Kevin 1st, Furilisca 2nd
+  F: { first: 5,  second: 15 }, // Bilsa 1st, Ruinenlust 2nd
+  G: { first: 3,  second: 16 }, // Jutsa 1st, Azure Mines 2nd
+  H: { first: 7,  second: 13 }, // Realize 1st, Garbelia 2nd
+};
+
 const R16_FIXTURES = [
   { id:'r16_1', label:'M49', home:['A',1], away:['B',2] },
   { id:'r16_2', label:'M50', home:['C',1], away:['D',2] },
@@ -299,6 +310,14 @@ const SF_FIXTURES = [
 let groupSelections = {};
 let matchWinners = {};
 Object.keys(GROUPS_DATA).forEach(g=>{ groupSelections[g]={first:null,second:null}; });
+
+function loadDefaults(){
+  Object.keys(GROUPS_DATA).forEach(g=>{
+    groupSelections[g] = { first: DEFAULT_SELECTIONS[g].first, second: DEFAULT_SELECTIONS[g].second };
+  });
+}
+ 
+loadDefaults();
 
 // ── URL encode/decode ──
 function encodeState(){
@@ -484,7 +503,8 @@ function copyURL(){
 
 // ── Reset ──
 function resetAll(){
-  Object.keys(GROUPS_DATA).forEach(g=>{groupSelections[g]={first:null,second:null};});
+  // Object.keys(GROUPS_DATA).forEach(g=>{groupSelections[g]={first:null,second:null};});
+  loadDefaults();
   matchWinners={};
   const u=new URL(window.location.href);u.searchParams.delete('p');window.history.replaceState({},'',u.toString());
   renderGroups();renderKnockouts();
